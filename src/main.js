@@ -21,5 +21,5 @@ let config = {
             debug: true,
         },
     },
-    scene: [ ]
+    scene: [ Menu, Play ]
 }

@@ -4,7 +4,8 @@ class Menu extends Phaser.Scene {
     }
 
     preload() {
-        this.load.image('space', './assets/placeholder_starfield.png');
+        this.load.image('gradient', './assets/SmallBackground.png');
+        this.load.image('space', './assets/SmallStars.png');
     }
 
     create() {
@@ -21,7 +22,7 @@ class Menu extends Phaser.Scene {
             fixedWidth: 0
         }
 
-
+        this.gradient_bg = this.add.tileSprite(0, 0, 960, 640, 'gradient').setOrigin(0, 0);
         this.starfield = this.add.tileSprite(0, 0, 960, 640, 'space').setOrigin(0, 0);
 
         // display menu text

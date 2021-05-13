@@ -11,6 +11,9 @@ class Play extends Phaser.Scene {
     }
 
     create() {
+
+        //physics
+        this.DRAG = 100; 
         // temporary ui scheme
         let menuConfig = {
             fontFamily: 'Courier',
@@ -45,5 +48,7 @@ class Play extends Phaser.Scene {
         this.player.update();
 
         this.displayFuel.text = this.player.getFuel();
+        this.player.body.setDragX(this.DRAG);
+        this.player.body.setDragY(this.DRAG);
     }
 }

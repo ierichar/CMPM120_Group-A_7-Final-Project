@@ -44,8 +44,27 @@ class Play extends Phaser.Scene {
         this.starfield = this.add.tileSprite(0, 0, 3000, 3000, 'stars');
         this.elevator = this.add.tileSprite(480, 960, 0, 3000, 'elevator');
 
-        // create stage gravity (velocity value)
-        this.stageGravity = 80;
+                // create stage gravity (velocity value)
+                this.stageGravity = 80;
+
+        //create the left wall
+        this.leftWall =  this.add.group();
+        for(let i = 0; i < game.config.height; i += tileSize) {
+            let leftTile = this.physics.add.sprite(100, i, 'H_Beam', 0).setOrigin(0,0);
+            leftTile.body.immovable = true;
+            leftTile.body.allowGravity = false;
+            this.leftWall.add(leftTile);
+        }
+        //create the right wall
+        this.rightWall =  this.add.group();
+        for(let i = 0; i < game.config.height; i += tileSize) {
+            let rightTile = this.physics.add.sprite(800, i, 'H_Beam', 0).setOrigin(0,0);
+            rightTile.body.immovable = true;
+            rightTile.body.allowGravity = false;
+            this.rightWall.add(rightTile);
+        }
+        
+        //this.physics.add.collider(this.player, this.leftWall);
 
         // create placeholder character
         this.player = new Astronaut(this, 480, 320, 'Astronaut', 0).setScale(0.5);
@@ -65,8 +84,8 @@ class Play extends Phaser.Scene {
 
         // create fuel display
         this.displayFuel = this.add.text(0, 0, this.player.getFuel(), menuConfig);
-        // create health display
-        this.displayHealth = this.add.text(100, 0, this.player.getHealth(), menuConfig);
+                // create health display
+                this.displayHealth = this.add.text(100, 0, this.player.getHealth(), menuConfig);
         
         // define keys
         keyW = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);
@@ -76,6 +95,11 @@ class Play extends Phaser.Scene {
     }
 
     update() {
+        this.player.update();
+        this.starfield.tilePositionY += 1;
+        this.elevator.tilePositionY += 1.3;
+
+        this.displayFuel.text = this.player.getFuel();
         this.player.body.setDragX(this.DRAG);
         this.player.body.setDragY(this.DRAG);
         this.player.update(this.stageGravity);

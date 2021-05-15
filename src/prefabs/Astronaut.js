@@ -4,13 +4,23 @@ class Astronaut extends Phaser.Physics.Arcade.Sprite {
 
         this.fuel = 5000;
         this.health = 3;
+        this.invincible = false;
 
         scene.add.existing(this);
         scene.physics.add.existing(this);
         this.setCollideWorldBounds(true);
+        this.setImmovable();
+        this.setMaxVelocity(500);
+        
+        // drag physics
+        this.DRAG = 100;
     }
 
     update(gravity) {
+        // keep player drag updated
+        this.body.setDragX(this.DRAG);
+        this.body.setDragY(this.DRAG);
+
         if (keyW.isDown && this.fuel > 0) {
             this.setAccelerationY(-500);
             this.fuel -= 1;
@@ -41,5 +51,9 @@ class Astronaut extends Phaser.Physics.Arcade.Sprite {
 
     decrimentHealth() {
         this.health--;
+    }
+
+    toggleInvincible() {
+        this.invincible = !(this.invincible);
     }
 }

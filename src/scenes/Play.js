@@ -8,7 +8,7 @@ class Play extends Phaser.Scene {
     preload() {
         this.load.image('gradient', './assets/SmallBackground.png');
         this.load.image('space', './assets/SmallStars.png');
-        this.load.image('elevator', './assets/SmallElevator.png');
+        this.load.image('smallelevator', './assets/SmallElevator.png');
         this.load.image('Astronaut', './assets/SmallAstronaut.png');
 
         this.load.image('L_Beam', './assets/L_Beam.png');
@@ -22,9 +22,6 @@ class Play extends Phaser.Scene {
     }
 
     create() {
-
-        //physics
-        this.DRAG = 100; 
         // temporary ui scheme
         let menuConfig = {
             fontFamily: 'Courier',
@@ -47,26 +44,32 @@ class Play extends Phaser.Scene {
         // create stage gravity (velocity value)
         this.stageGravity = 80;
 
+        // create stage level tracker
+        this.level = 0;
+
         // create placeholder character
         this.player = new Astronaut(this, 480, 320, 'Astronaut', 0).setScale(0.5);
         // this.player.setVelocityY(stageGravity);
 
         // create hazard group
-        // this.hazardGroup = this.add.group();
+        this.hazardGroup = this.add.group({
+            runChildUpdate: true,
+        });
 
-        // let drill = this.add.tileSprite(380, 0, 'drill');
-        // let wrench = this.add.tileSprite(580, 0, 'wrench');
-        // let hbeam = this.add.tileSprite(120, 200, 'highBeam');
-        // let lbeam = this.add.tileSprite(680, 200, 'lowBeam');
-        // this.hazardGroup.add(drill);
-        // this.hazardGroup.add(wrench);
-        // this.hazardGroup.add(hbeam);
-        // this.hazardGroup.add(lbeam);
+        this.hazardTimer = this.time.addEvent({
+            delay: 4000,
+            callback: this.addHazard,
+            callbackScope: this,
+            loop: true,
+            startAt: 0
+        });
 
         // create fuel display
         this.displayFuel = this.add.text(0, 0, this.player.getFuel(), menuConfig);
         // create health display
         this.displayHealth = this.add.text(100, 0, this.player.getHealth(), menuConfig);
+        // create level descent tracker
+        this.displayLevel = this.add.text(0, 50, Math.floor(this.level), menuConfig);
         
         // define keys
         keyW = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);
@@ -76,21 +79,64 @@ class Play extends Phaser.Scene {
     }
 
     update() {
-        this.player.body.setDragX(this.DRAG);
-        this.player.body.setDragY(this.DRAG);
+        // update player
         this.player.update(this.stageGravity);
+
+        // player/hazard collision
+        this.physics.world.collide(this.player, this.hazardGroup, this.hazardCollision, null, this);
+
+        // update displays
         this.displayFuel.text = this.player.getFuel();
         this.displayHealth.text = this.player.getHealth();
+        this.displayLevel.text = Math.floor(this.level);
 
         // move environment with movement
         if (keyW.isDown && this.player.getFuel() > 0) {
             this.space.tilePositionY -= this.stageGravity/100;
             this.starfield.tilePositionY -= this.stageGravity/100;
             this.elevator.tilePositionY -= this.stageGravity/100;
+            this.level -= 1/100;
         } else {
             this.space.tilePositionY += this.stageGravity/100;
             this.starfield.tilePositionY += this.stageGravity/100;
             this.elevator.tilePositionY += this.stageGravity/100;
+            this.level += 1/100;
+        }
+    }
+
+    // randomly spawn hazards
+    addHazard() {
+        let rand_obj = Phaser.Math.Between(0, 3);
+        let rand_x_pos = Phaser.Math.Between(200, 700);
+        switch (rand_obj) {
+            case 0:
+                let drill = new Hazard(this, rand_x_pos, 0, 'drill', 0).setScale(0.35);
+                drill.setVelocityY(this.stageGravity);
+                this.hazardGroup.add(drill);
+                break;
+            case 1:
+                let wrench = new Hazard(this, rand_x_pos, 0, 'wrench', 0).setScale(0.35);
+                wrench.setVelocityY(this.stageGravity);
+                this.hazardGroup.add(wrench);
+                break;
+            case 2:
+                let hbeam = new Hazard(this, rand_x_pos, 0, 'H_Beam', 0).setScale(0.35);
+                hbeam.setVelocityY(this.stageGravity);
+                this.hazardGroup.add(hbeam);
+                break;
+            case 3:
+                let lbeam = new Hazard(this, rand_x_pos, 0, 'L_Beam', 0).setScale(0.35);
+                lbeam.setVelocityY(this.stageGravity);
+                this.hazardGroup.add(lbeam);
+                break;
+        }
+    }
+
+    hazardCollision() {
+        if ((this.player.getHealth() > 0) && !(this.player.invincible)) {
+            this.player.decrimentHealth();
+        } else {
+            this.scene.start('gameOverScene');
         }
     }
 }

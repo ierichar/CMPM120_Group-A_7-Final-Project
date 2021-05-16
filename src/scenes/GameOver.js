@@ -20,7 +20,11 @@ class GameOver extends Phaser.Scene {
                 bottom: 5,
             },
             fixedWidth: 0
+<<<<<<< HEAD
         } 
+=======
+        }
+>>>>>>> Ian
 
         this.gradient_bg = this.add.tileSprite(0, 0, 960, 640, 'gradient').setOrigin(0, 0);
         this.starfield = this.add.tileSprite(0, 0, 960, 640, 'space').setOrigin(0, 0);

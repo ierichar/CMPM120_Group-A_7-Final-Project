@@ -4,6 +4,13 @@ class Hazard extends Phaser.Physics.Arcade.Sprite {
 
         scene.add.existing(this);
         scene.physics.add.existing(this);
-        this.setVelocityY(velocity);
+        this.setImmovable();
+    }
+
+    update() {
+        // temporary wrap until spawns are created
+        if (this.y > game.config.height) {
+            this.destroy();
+        }
     }
 }

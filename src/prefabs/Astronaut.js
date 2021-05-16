@@ -9,7 +9,6 @@ class Astronaut extends Phaser.Physics.Arcade.Sprite {
         scene.add.existing(this);
         scene.physics.add.existing(this);
         this.setCollideWorldBounds(true);
-        this.setImmovable();
         this.setMaxVelocity(500);
         
         // drag physics

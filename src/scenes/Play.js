@@ -53,6 +53,7 @@ class Play extends Phaser.Scene {
             let leftTile = this.physics.add.sprite(100, i, 'H_Beam', 0).setOrigin(0,0);
             leftTile.body.immovable = true;
             leftTile.body.allowGravity = false;
+            leftTile.visible = false;
             this.leftWall.add(leftTile);
         }
         //create the right wall
@@ -61,17 +62,26 @@ class Play extends Phaser.Scene {
             let rightTile = this.physics.add.sprite(800, i, 'H_Beam', 0).setOrigin(0,0);
             rightTile.body.immovable = true;
             rightTile.body.allowGravity = false;
+            rightTile.visible = false;
             this.rightWall.add(rightTile);
         }
         
         //this.physics.add.collider(this.player, this.leftWall);
+        console.log(this.player);
+        console.log(this.leftWall);
 
         // create placeholder character
         this.player = new Astronaut(this, 480, 320, 'Astronaut', 0).setScale(0.5);
         // this.player.setVelocityY(stageGravity);
 
+
+
         // create hazard group
         // this.hazardGroup = this.add.group();
+
+        //add colliders (IMPORTANT: make sure colliders are placed BELOW creation of sprites; it will error otherwise)
+        this.physics.add.collider(this.player, this.leftWall);
+        this.physics.add.collider(this.player, this.rightWall);
 
         // let drill = this.add.tileSprite(380, 0, 'drill');
         // let wrench = this.add.tileSprite(580, 0, 'wrench');

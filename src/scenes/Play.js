@@ -19,6 +19,10 @@ class Play extends Phaser.Scene {
         this.load.image('astronaut', './assets/Astronaut.png');
         this.load.image('elevator', './assets/Elevator.png');
         this.load.image('wrench', './assets/wrench.png');
+
+        this.load.audio('trackOne', './assets/trackOne.mp3');
+        this.load.audio('slap', './assets/wallSlap.mp3');
+        this.load.audio('jetpack', './assets/jetpackOne.mp3');
     }
 
     create() {
@@ -38,6 +42,29 @@ class Play extends Phaser.Scene {
             },
             fixedWidth: 0
         }
+
+        //load the audio
+        this.trackOneBGM = this.sound.add('trackOne', { 
+            mute: false,
+            volume: .55,
+            rate: 1,
+            loop: true 
+        });
+        this.trackOneBGM.play();
+
+        this.slapAudio = this.sound.add('slap', { 
+            mute: false,
+            volume: 1,
+            rate: 1,
+            loop: false
+        });
+
+        this.jetpackAudio = this.sound.add('jetpack', { 
+            mute: false,
+            volume: .3,
+            rate: .3,
+            loop: false
+        });
 
         // create background
         this.space = this.add.tileSprite(0, 0, 3000, 3000, 'space');
@@ -66,10 +93,6 @@ class Play extends Phaser.Scene {
             this.rightWall.add(rightTile);
         }
         
-        //this.physics.add.collider(this.player, this.leftWall);
-        console.log(this.player);
-        console.log(this.leftWall);
-
         // create placeholder character
         this.player = new Astronaut(this, 480, 320, 'Astronaut', 0).setScale(0.5);
         // this.player.setVelocityY(stageGravity);
@@ -80,8 +103,9 @@ class Play extends Phaser.Scene {
         // this.hazardGroup = this.add.group();
 
         //add colliders (IMPORTANT: make sure colliders are placed BELOW creation of sprites; it will error otherwise)
-        this.physics.add.collider(this.player, this.leftWall);
-        this.physics.add.collider(this.player, this.rightWall);
+        this.physics.add.collider(this.player, this.leftWall, this.touchWall, false, this);
+        this.physics.add.collider(this.player, this.rightWall, this.touchWall, false, this);
+        //this.physics.add.collider(this.playerOne, this.spike01, this.touchSpike, false, this);
 
         // let drill = this.add.tileSprite(380, 0, 'drill');
         // let wrench = this.add.tileSprite(580, 0, 'wrench');
@@ -96,7 +120,9 @@ class Play extends Phaser.Scene {
         this.displayFuel = this.add.text(0, 0, this.player.getFuel(), menuConfig);
                 // create health display
                 this.displayHealth = this.add.text(100, 0, this.player.getHealth(), menuConfig);
-        
+
+        this.keyIsPressed = false;
+
         // define keys
         keyW = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);
         keyA = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
@@ -105,6 +131,26 @@ class Play extends Phaser.Scene {
     }
 
     update() {
+        //this is how the jetpack sound plays
+        //if a key has not previously been pressed and it is now pressed, play a sound, but only once
+        if(this.keyIsPressed ==false){
+        if((keyA.isDown || keyD.isDown || keyW.isDown|| keyS.isDown)&& (this.player.fuel > 0)){
+            this.jetpackAudio.play();
+            this.keyIsPressed = true;
+        }
+        else{
+            this.keyIsPressed = false;
+        }
+    }
+    //here is a lockout check to see if a key  is still being pressed. If no, you can reset the first loop next time an update check runs.
+    if((keyA.isDown || keyD.isDown || keyW.isDown|| keyS.isDown)&& (this.player.fuel > 0)){
+        this.keyIsPressed = true;
+    }
+    else{
+        this.keyIsPressed = false;
+    }
+
+    
         this.player.update();
         this.starfield.tilePositionY += 1;
         this.elevator.tilePositionY += 1.3;
@@ -125,6 +171,16 @@ class Play extends Phaser.Scene {
             this.space.tilePositionY += this.stageGravity/100;
             this.starfield.tilePositionY += this.stageGravity/100;
             this.elevator.tilePositionY += this.stageGravity/100;
+        }
+    }
+    touchWall() {
+        if(keyA.isDown || keyD.isDown){
+            
+            this.slapAudio
+        }
+        else{
+            this.slapAudio.play();
+            
         }
     }
 }

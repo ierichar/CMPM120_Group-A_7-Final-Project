@@ -20,7 +20,8 @@ let config = {
         arcade: {
             x:0,
             y:0,
-            debug: true,
+            // debug off for assignment submission
+            // debug: true,
         },
     },
     scene: [ Menu, Play, GameOver ]

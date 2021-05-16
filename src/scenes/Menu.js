@@ -26,6 +26,7 @@ class Menu extends Phaser.Scene {
         this.starfield = this.add.tileSprite(0, 0, 960, 640, 'space').setOrigin(0, 0);
 
         // display menu text
+        this.add.text(game.config.width/2, game.config.height/2 + borderUISize + borderPadding, 'ORBITAL DESCENT', menuConfig).setOrigin(0.5);
         this.add.text(game.config.width/2, game.config.height/2 + borderUISize*2 + borderPadding*2, 'Use WASD to move', menuConfig).setOrigin(0.5);
         this.add.text(game.config.width/2, game.config.height/2 + borderUISize*3 + borderPadding*3, 'Press (P) to play!', menuConfig).setOrigin(0.5);
 

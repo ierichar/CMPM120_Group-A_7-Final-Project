@@ -71,7 +71,6 @@ class Play extends Phaser.Scene {
                 // create stage gravity (velocity value)
                 this.stageGravity = 80;
 
-<<<<<<< HEAD
         //create the left wall
         this.leftWall =  this.add.group();
         for(let i = 0; i < game.config.height; i += tileSize) {
@@ -91,11 +90,9 @@ class Play extends Phaser.Scene {
             this.rightWall.add(rightTile);
         }
         
-=======
         // create stage level tracker
         this.level = 0;
 
->>>>>>> Ian
         // create placeholder character
         this.player = new Astronaut(this, 480, 320, 'Astronaut', 0).setScale(0.5);
         // this.player.setVelocityY(stageGravity);
@@ -107,7 +104,6 @@ class Play extends Phaser.Scene {
             runChildUpdate: true,
         });
 
-<<<<<<< HEAD
         //add colliders (IMPORTANT: make sure colliders are placed BELOW creation of sprites; it will error otherwise)
         this.physics.add.collider(this.player, this.leftWall, this.touchWall, false, this);
         this.physics.add.collider(this.player, this.rightWall, this.touchWall, false, this);
@@ -122,14 +118,8 @@ class Play extends Phaser.Scene {
         // this.hazardGroup.add(hbeam);
         // this.hazardGroup.add(lbeam);
 
-        // create fuel display
-        this.displayFuel = this.add.text(0, 0, this.player.getFuel(), menuConfig);
-                // create health display
-                this.displayHealth = this.add.text(100, 0, this.player.getHealth(), menuConfig);
-
         this.keyIsPressed = false;
 
-=======
         this.hazardTimer = this.time.addEvent({
             delay: 4000,
             callback: this.addHazard,
@@ -145,7 +135,6 @@ class Play extends Phaser.Scene {
         // create level descent tracker
         this.displayLevel = this.add.text(0, 50, Math.floor(this.level), menuConfig);
         
->>>>>>> Ian
         // define keys
         keyW = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);
         keyA = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
@@ -154,7 +143,6 @@ class Play extends Phaser.Scene {
     }
 
     update() {
-<<<<<<< HEAD
         //this is how the jetpack sound plays
         //if a key has not previously been pressed and it is now pressed, play a sound, but only once
         if(this.keyIsPressed ==false){
@@ -182,9 +170,7 @@ class Play extends Phaser.Scene {
         this.displayFuel.text = this.player.getFuel();
         this.player.body.setDragX(this.DRAG);
         this.player.body.setDragY(this.DRAG);
-=======
         // update player
->>>>>>> Ian
         this.player.update(this.stageGravity);
 
         // player/hazard collision

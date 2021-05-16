@@ -28,6 +28,7 @@ class Menu extends Phaser.Scene {
         // display menu text
         this.add.text(game.config.width/2, game.config.height/2 + borderUISize*2 + borderPadding*2, 'Use WASD to move', menuConfig).setOrigin(0.5);
         this.add.text(game.config.width/2, game.config.height/2 + borderUISize*3 + borderPadding*3, 'Press (P) to play!', menuConfig).setOrigin(0.5);
+        this.add.text(game.config.width/2, game.config.height/2 + borderUISize*4 + borderPadding*4, 'Avoid falling obstacles and survive', menuConfig).setOrigin(0.5);
 
         // define keys
         keyP = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.P);

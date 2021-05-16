@@ -228,16 +228,16 @@ class Play extends Phaser.Scene {
             this.player.decrimentHealth();
         } else {
             this.scene.start('gameOverScene');
+            this.trackOneBGM.mute = true;
         }
     }
     touchWall() {
         if(keyA.isDown || keyD.isDown){
             
-            this.slapAudio
+            //this.slapAudio
         }
         else{
             this.slapAudio.play();
-            
         }
     }
 }

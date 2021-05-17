@@ -109,15 +109,6 @@ class Play extends Phaser.Scene {
         this.physics.add.collider(this.player, this.rightWall, this.touchWall, false, this);
         //this.physics.add.collider(this.playerOne, this.spike01, this.touchSpike, false, this);
 
-        // let drill = this.add.tileSprite(380, 0, 'drill');
-        // let wrench = this.add.tileSprite(580, 0, 'wrench');
-        // let hbeam = this.add.tileSprite(120, 200, 'highBeam');
-        // let lbeam = this.add.tileSprite(680, 200, 'lowBeam');
-        // this.hazardGroup.add(drill);
-        // this.hazardGroup.add(wrench);
-        // this.hazardGroup.add(hbeam);
-        // this.hazardGroup.add(lbeam);
-
         this.keyIsPressed = false;
 
         this.hazardTimer = this.time.addEvent({
@@ -227,6 +218,7 @@ class Play extends Phaser.Scene {
         if ((this.player.getHealth() > 0) && !(this.player.invincible)) {
             this.player.decrimentHealth();
         } else {
+            this.trackOneBGM.stop();
             this.scene.start('gameOverScene');
             this.trackOneBGM.mute = true;
         }

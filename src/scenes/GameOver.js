@@ -6,9 +6,20 @@ class GameOver extends Phaser.Scene {
     preload() {
         this.load.image('gradient', './assets/SmallBackground.png');
         this.load.image('space', './assets/SmallStars.png');
+
+        this.load.audio('gameOver', './assets/gameOver.mp3');
     }
 
     create() {
+
+        this.GameOverSong = this.sound.add('gameOver', { 
+            mute: false,
+            volume: .55,
+            rate: 1,
+            loop: false 
+        });
+        this.GameOverSong.play();
+
         let menuConfig = {
             fontFamily: 'Courier',
             fontSize: '28px',
@@ -38,9 +49,11 @@ class GameOver extends Phaser.Scene {
 
     update() {
         if (Phaser.Input.Keyboard.JustDown(keyP)) {
+            this.GameOverSong.mute = true;
             this.scene.start('playScene');
         }
         if (Phaser.Input.Keyboard.JustDown(keyM)) {
+            this.GameOverSong.mute = true;
             this.scene.start('menuScene');
         }
         this.starfield.tilePositionY += 1;

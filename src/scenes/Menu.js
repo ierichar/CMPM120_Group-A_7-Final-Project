@@ -4,7 +4,7 @@ class Menu extends Phaser.Scene {
     }
 
     preload() {
-        this.load.image('gradient', './assets/SmallBackground.png');
+        this.load.image('gradient', './assets/Background_2.png');
         this.load.image('space', './assets/SmallStars.png');
     }
 

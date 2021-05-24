@@ -21,10 +21,10 @@ let config = {
             x:0,
             y:0,
             // debug off for assignment submission
-            // debug: true,
+             debug: true,
         },
     },
-    scene: [ Menu, Play, GameOver ]
+    scene: [ Menu, Play, GameOver, stageComplete ]
 }
 
 let game = new Phaser.Game(config);
@@ -42,3 +42,4 @@ let keyW;
 let keyA;
 let keyS;
 let keyD;
+let keyN;

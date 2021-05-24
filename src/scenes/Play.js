@@ -26,6 +26,12 @@ class Play extends Phaser.Scene {
     }
 
     create() {
+
+        
+        //Keep track of which stage you are on
+        this.stageTracker = 1;
+
+
         // temporary ui scheme
         let menuConfig = {
             fontFamily: 'Courier',
@@ -47,7 +53,9 @@ class Play extends Phaser.Scene {
             rate: 1,
             loop: true 
         });
+        if(this.stageTracker==1){
         this.trackOneBGM.play();
+        }
 
         this.slapAudio = this.sound.add('slap', { 
             mute: false,
@@ -91,7 +99,7 @@ class Play extends Phaser.Scene {
         }
         
         // create stage level tracker
-        this.level = 0;
+        this.level = 1;
 
         // create placeholder character
         this.player = new Astronaut(this, 480, 320, 'Astronaut', 0).setScale(0.5);
@@ -119,6 +127,19 @@ class Play extends Phaser.Scene {
             startAt: 0
         });
 
+        //spike roof at level 2
+        if(this.stageTracker == 2){
+        this.spikeyRoof = this.physics.add.sprite(480, 20, 'H_Beam', 0).setScale(12, 0.25);
+        this.spikeyRoof.body.immovable = true;
+        this.hazardGroup.add(this.spikeyRoof);
+        }
+
+        this.escapePod = this.physics.add.sprite( 480, 500, 'H_Beam', 0).setScale(12,0.25);
+        this.escapePod.body.immovable = true;
+
+        this.physics.add.collider(this.player, this.escapePod,this.stageCompletion, false, this);
+
+
         // create fuel display
         this.displayFuel = this.add.text(0, 0, this.player.getFuel(), menuConfig);
         // create health display
@@ -131,6 +152,7 @@ class Play extends Phaser.Scene {
         keyA = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
         keyS = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S);
         keyD = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
+        keyN = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.N);
     }
 
     update() {
@@ -153,10 +175,9 @@ class Play extends Phaser.Scene {
         this.keyIsPressed = false;
     }
 
-    
+
         this.player.update();
-        this.starfield.tilePositionY += 1;
-        this.elevator.tilePositionY += 1.3;
+     
 
         this.displayFuel.text = this.player.getFuel();
         this.player.body.setDragX(this.DRAG);
@@ -173,6 +194,11 @@ class Play extends Phaser.Scene {
         this.displayLevel.text = Math.floor(this.level);
 
         // move environment with movement
+
+        if(this.level < 7){
+            this.starfield.tilePositionY += 1;
+            this.elevator.tilePositionY += 1.3;
+        
         if (keyW.isDown && this.player.getFuel() > 0) {
             this.space.tilePositionY -= this.stageGravity/100;
             this.starfield.tilePositionY -= this.stageGravity/100;
@@ -186,10 +212,17 @@ class Play extends Phaser.Scene {
         }
     }
 
+    if((this.level > 5) && (this.level < 7)){
+        console.log("bruh");
+        this.escapePod.Y -= 1;
+    }
+}
+
     // randomly spawn hazards
     addHazard() {
         let rand_obj = Phaser.Math.Between(0, 3);
         let rand_x_pos = Phaser.Math.Between(200, 700);
+        if(this.stageTracker == 1){
         switch (rand_obj) {
             case 0:
                 let drill = new Hazard(this, rand_x_pos, 0, 'drill', 0).setScale(0.35);
@@ -211,6 +244,7 @@ class Play extends Phaser.Scene {
                 lbeam.setVelocityY(this.stageGravity);
                 this.hazardGroup.add(lbeam);
                 break;
+            }
         }
     }
 
@@ -219,6 +253,7 @@ class Play extends Phaser.Scene {
             this.player.decrimentHealth();
         } else {
             this.trackOneBGM.stop();
+            this.jetpackAudio.stop();
             this.scene.start('gameOverScene');
             this.trackOneBGM.mute = true;
         }
@@ -231,5 +266,9 @@ class Play extends Phaser.Scene {
         else{
             this.slapAudio.play();
         }
+    }
+    stageCompletion(){
+        this.trackOneBGM.mute = true;
+        this.scene.start('stageCompleteScene');
     }
 }

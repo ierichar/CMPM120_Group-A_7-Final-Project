@@ -6,17 +6,23 @@ class Play extends Phaser.Scene {
     //hello peeps!
 
     preload() {
+        // environment
         this.load.image('gradient', './assets/Background_2.png');
         this.load.image('space', './assets/SmallStars.png');
         this.load.image('elevator', './assets/Level_1.png');
+        // UI
+        this.load.image('miniMap', './assets/SpaceElevator.png');
+        this.load.image('levelTracker', './assets/Elevator_Indicator.png');
+        this.load.image('astrohead', './assets/AstroHead.png');
+        this.load.image('heart', './assets/Heart.png');
+        this.load.image('transmit', './assets/IncomingTransmission.png');
+        // game objects
         this.load.image('Astronaut', './assets/SmallAstronaut.png');
-
         this.load.image('L_Beam', './assets/L_Beam.png');
         this.load.image('H_Beam', './assets/H_Beam.png');
         this.load.image('drill', './assets/drill.png');
-        
         this.load.image('wrench', './assets/wrench.png');
-
+        // audio
         this.load.audio('trackOne', './assets/trackOne.mp3');
         this.load.audio('slap', './assets/wallSlap.mp3');
         this.load.audio('jetpack', './assets/jetpackOne.mp3');
@@ -50,8 +56,9 @@ class Play extends Phaser.Scene {
             rate: 1,
             loop: true 
         });
-        if(this.stageTracker==1){
-        this.trackOneBGM.play();
+
+        if (this.stageTracker == 1) {
+            this.trackOneBGM.play();
         }
 
         this.slapAudio = this.sound.add('slap', { 
@@ -78,7 +85,7 @@ class Play extends Phaser.Scene {
 
         //create the left wall
         this.leftWall =  this.add.group();
-        for(let i = 0; i < game.config.height; i += tileSize) {
+        for (let i = 0; i < game.config.height; i += tileSize) {
             let leftTile = this.physics.add.sprite(100, i, 'H_Beam', 0).setOrigin(0,0);
             leftTile.body.immovable = true;
             leftTile.body.allowGravity = false;
@@ -87,7 +94,7 @@ class Play extends Phaser.Scene {
         }
         //create the right wall
         this.rightWall =  this.add.group();
-        for(let i = 0; i < game.config.height; i += tileSize) {
+        for (let i = 0; i < game.config.height; i += tileSize) {
             let rightTile = this.physics.add.sprite(800, i, 'H_Beam', 0).setOrigin(0,0);
             rightTile.body.immovable = true;
             rightTile.body.allowGravity = false;
@@ -102,12 +109,26 @@ class Play extends Phaser.Scene {
         this.player = new Astronaut(this, 480, 320, 'Astronaut', 0).setScale(0.5);
         // this.player.setVelocityY(stageGravity);
 
-
+        // create fuel group
+        this.fuelGroup = this.add.group ({
+            runChildUpdate: true,
+        });
+        // add overlap between player
+        this.physics.add.overlap(this.player, this.fuelGroup, (obj1, obj2) => {
+            obj1.reFuel();
+            obj2.destroy();
+        })
 
         // create hazard group
         this.hazardGroup = this.add.group({
             runChildUpdate: true,
         });
+        // add overlap between player
+        this.physics.add.overlap(this.player, this.hazardGroup, (obj1, obj2) => {
+            if (obj1.getInvincible() == false) {
+                this.hazardCollision();
+            }
+        })
 
         //add colliders (IMPORTANT: make sure colliders are placed BELOW creation of sprites; it will error otherwise)
         this.physics.add.collider(this.player, this.leftWall, this.touchWall, false, this);
@@ -116,6 +137,7 @@ class Play extends Phaser.Scene {
 
         this.keyIsPressed = false;
 
+        // temporary spawn timer
         this.hazardTimer = this.time.addEvent({
             delay: 4000,
             callback: this.addHazard,
@@ -124,11 +146,11 @@ class Play extends Phaser.Scene {
             startAt: 0
         });
 
-        //spike roof at level 2
-        if(this.stageTracker == 2){
-        this.spikeyRoof = this.physics.add.sprite(480, 20, 'H_Beam', 0).setScale(12, 0.25);
-        this.spikeyRoof.body.immovable = true;
-        this.hazardGroup.add(this.spikeyRoof);
+        // spike roof at level 2
+        if (this.stageTracker == 2){
+            this.spikeyRoof = this.physics.add.sprite(480, 20, 'H_Beam', 0).setScale(12, 0.25);
+            this.spikeyRoof.body.immovable = true;
+            this.hazardGroup.add(this.spikeyRoof);
         }
 
         this.escapePod = this.physics.add.sprite( 480, 500, 'H_Beam', 0).setScale(12,0.25);
@@ -137,13 +159,21 @@ class Play extends Phaser.Scene {
         this.physics.add.collider(this.player, this.escapePod,this.stageCompletion, false, this);
 
 
-        // create fuel display
-        this.displayFuel = this.add.text(0, 0, this.player.getFuel(), menuConfig);
-        // create health display
-        this.displayHealth = this.add.text(100, 0, this.player.getHealth(), menuConfig);
-        // create level descent tracker
+        // TEMP: create fuel display
+        this.displayFuel = this.add.text(game.config.width - borderUISize*3 - borderPadding, borderUISize*3 + borderPadding, this.player.getFuel(), menuConfig);
+        // TEMP: create health display
+        this.displayHealth = this.add.text(game.config.width - borderUISize*3 - borderPadding, borderUISize*2 + borderPadding, this.player.getHealth(), menuConfig);
+        // TEMP: create level descent tracker
         this.displayLevel = this.add.text(0, 50, Math.floor(this.level), menuConfig);
         
+        // create global map
+        this.miniMap = this.add.image(borderUISize + borderPadding, borderPadding + borderUISize, 'miniMap').setOrigin(0, 0);
+        this.levelTracker = this.add.image(borderUISize + borderPadding*3.75, 0 + borderUISize*2.8 + borderPadding, 'levelTracker', 0 ,30);
+        this.heart1 = this.add.image(game.config.width - borderUISize, borderUISize + borderPadding, 'heart');
+        this.heart2 = this.add.image(game.config.width - borderUISize*2, borderUISize + borderPadding, 'heart');
+        this.heart3 = this.add.image(game.config.width - borderUISize*3, borderUISize + borderPadding, 'heart');
+        this.astrohead = this.add.image(game.config.width - borderUISize*4.5, borderUISize + borderPadding, 'astrohead');
+
         // define keys
         keyW = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);
         keyA = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
@@ -153,30 +183,27 @@ class Play extends Phaser.Scene {
     }
 
     update() {
-        //this is how the jetpack sound plays
-        //if a key has not previously been pressed and it is now pressed, play a sound, but only once
-        if(this.keyIsPressed ==false){
-        if((keyA.isDown || keyD.isDown || keyW.isDown|| keyS.isDown)&& (this.player.fuel > 0)){
-            this.jetpackAudio.play();
+        // this is how the jetpack sound plays
+        // if a key has not previously been pressed and it is now pressed, play a sound, but only once
+        if (this.keyIsPressed == false) {
+            if ((keyA.isDown || keyD.isDown || keyW.isDown|| keyS.isDown) && (this.player.fuel > 0)) {
+                this.jetpackAudio.play();
+                this.keyIsPressed = true;
+            }
+            else {
+                this.keyIsPressed = false;
+            }
+        }
+        // here is a lockout check to see if a key  is still being pressed. If no, you can reset the first loop next time an update check runs.
+        if ((keyA.isDown || keyD.isDown || keyW.isDown|| keyS.isDown) && (this.player.fuel > 0)) {
             this.keyIsPressed = true;
         }
-        else{
+        else {
             this.keyIsPressed = false;
         }
-    }
-    //here is a lockout check to see if a key  is still being pressed. If no, you can reset the first loop next time an update check runs.
-    if((keyA.isDown || keyD.isDown || keyW.isDown|| keyS.isDown)&& (this.player.fuel > 0)){
-        this.keyIsPressed = true;
-    }
-    else{
-        this.keyIsPressed = false;
-    }
-
 
         this.player.update();
      
-
-        this.displayFuel.text = this.player.getFuel();
         this.player.body.setDragX(this.DRAG);
         this.player.body.setDragY(this.DRAG);
         // update player
@@ -190,71 +217,98 @@ class Play extends Phaser.Scene {
         this.displayHealth.text = this.player.getHealth();
         this.displayLevel.text = Math.floor(this.level);
 
-        // move environment with movement
+        // demonstrates spawning fuel into environment
+        if (this.level == 1) {
+            this.addFuel(300, 0);
+        }
 
-        if(this.level < 7){
+        // move environment with movement
+        if(this.level < 7) {
             this.starfield.tilePositionY += 1;
             this.elevator.tilePositionY += 1.3;
         
-        if (keyW.isDown && this.player.getFuel() > 0) {
-            this.space.tilePositionY -= this.stageGravity/100;
-            this.starfield.tilePositionY -= this.stageGravity/100;
-            this.elevator.tilePositionY -= this.stageGravity/100;
-            this.level -= 1/100;
-        } else {
-            this.space.tilePositionY += this.stageGravity/100;
-            this.starfield.tilePositionY += this.stageGravity/100;
-            this.elevator.tilePositionY += this.stageGravity/100;
-            this.level += 1/100;
+            if (keyW.isDown && this.player.getFuel() > 0) {
+                this.space.tilePositionY -= this.stageGravity/100;
+                this.starfield.tilePositionY -= this.stageGravity/100;
+                this.elevator.tilePositionY -= this.stageGravity/100;
+                this.level -= 1/100;
+            } else {
+                // update background
+                this.space.tilePositionY += this.stageGravity/100;
+                this.starfield.tilePositionY += this.stageGravity/100;
+                this.elevator.tilePositionY += this.stageGravity/100;
+                this.level += 1/100;
+                // update minimap
+                this.levelTracker.y += 0.02;
+            }
+        }
+
+        if ((this.level > 5) && (this.level < 7)) {
+            console.log("bruh");
+            this.escapePod.Y -= 1;
         }
     }
-
-    if((this.level > 5) && (this.level < 7)){
-        console.log("bruh");
-        this.escapePod.Y -= 1;
-    }
-}
 
     // randomly spawn hazards
     addHazard() {
         let rand_obj = Phaser.Math.Between(0, 3);
         let rand_x_pos = Phaser.Math.Between(200, 700);
+        let rand_rotation = Phaser.Math.Between(-100, 100);
         if(this.stageTracker == 1){
         switch (rand_obj) {
             case 0:
                 let drill = new Hazard(this, rand_x_pos, 0, 'drill', 0).setScale(0.35);
                 drill.setVelocityY(this.stageGravity);
+                drill.body.setAngularVelocity(rand_rotation);
                 this.hazardGroup.add(drill);
                 break;
             case 1:
                 let wrench = new Hazard(this, rand_x_pos, 0, 'wrench', 0).setScale(0.35);
                 wrench.setVelocityY(this.stageGravity);
+                wrench.body.setAngularVelocity(rand_rotation);
                 this.hazardGroup.add(wrench);
                 break;
             case 2:
                 let hbeam = new Hazard(this, rand_x_pos, 0, 'H_Beam', 0).setScale(0.35);
                 hbeam.setVelocityY(this.stageGravity);
+                hbeam.body.setAngularVelocity(rand_rotation);
                 this.hazardGroup.add(hbeam);
                 break;
             case 3:
                 let lbeam = new Hazard(this, rand_x_pos, 0, 'L_Beam', 0).setScale(0.35);
                 lbeam.setVelocityY(this.stageGravity);
+                lbeam.body.setAngularVelocity(rand_rotation);
                 this.hazardGroup.add(lbeam);
                 break;
             }
         }
     }
 
+    // Pre: x position, y position to place in world
+    addFuel(x, y) {
+        let fuel = new Hazard(this, x, y, 'levelTracker', 0);
+        fuel.setVelocityY(this.stageGravity);
+        this.fuelGroup.add(fuel);
+    }
+
+    // NOTE: Need to set invulnerability timer after getting hit once
     hazardCollision() {
-        if ((this.player.getHealth() > 0) && !(this.player.invincible)) {
+        if ((this.player.getHealth() > 0) && !(this.player.getInvincible())) {
             this.player.decrimentHealth();
-        } else {
+            this.invulnTimer = this.time.delayedCall({
+                delay: 5000,
+                callback: this.player.toggleInvincible,
+                callbackScope: this,
+                loop: false,
+            })
+        }else {
             this.trackOneBGM.stop();
             this.jetpackAudio.stop();
             this.scene.start('gameOverScene');
             this.trackOneBGM.mute = true;
         }
     }
+    
     touchWall() {
         if(keyA.isDown || keyD.isDown){
             

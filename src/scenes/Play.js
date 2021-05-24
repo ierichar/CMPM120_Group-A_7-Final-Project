@@ -6,18 +6,15 @@ class Play extends Phaser.Scene {
     //hello peeps!
 
     preload() {
-        this.load.image('gradient', './assets/SmallBackground.png');
+        this.load.image('gradient', './assets/Background_2.png');
         this.load.image('space', './assets/SmallStars.png');
-        this.load.image('smallelevator', './assets/SmallElevator.png');
+        this.load.image('elevator', './assets/Level_1.png');
         this.load.image('Astronaut', './assets/SmallAstronaut.png');
 
         this.load.image('L_Beam', './assets/L_Beam.png');
         this.load.image('H_Beam', './assets/H_Beam.png');
         this.load.image('drill', './assets/drill.png');
-        this.load.image('stars', './assets/Stars.png');
-        this.load.image('space', './assets/Background.png');
-        this.load.image('astronaut', './assets/Astronaut.png');
-        this.load.image('elevator', './assets/Elevator.png');
+        
         this.load.image('wrench', './assets/wrench.png');
 
         this.load.audio('trackOne', './assets/trackOne.mp3');
@@ -64,9 +61,9 @@ class Play extends Phaser.Scene {
         });
 
         // create background
-        this.space = this.add.tileSprite(0, 0, 3000, 3000, 'space');
-        this.starfield = this.add.tileSprite(0, 0, 3000, 3000, 'stars');
-        this.elevator = this.add.tileSprite(480, 960, 0, 3000, 'elevator');
+        this.space = this.add.image(480, 320, 'gradient');
+        this.starfield = this.add.tileSprite(480, 320, 960, 640, 'space');
+        this.elevator = this.add.tileSprite(480, 320, 0, 0, 'elevator');
 
                 // create stage gravity (velocity value)
                 this.stageGravity = 80;

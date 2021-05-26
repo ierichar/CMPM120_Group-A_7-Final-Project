@@ -3,7 +3,7 @@ class Astronaut extends Phaser.Physics.Arcade.Sprite {
         super(scene, x, y, texture, frame);
 
         this.fuel = 5000;
-        this.health = 3;
+        this.health = 100;
         this.invincible = false;
 
         scene.add.existing(this);
@@ -38,8 +38,15 @@ class Astronaut extends Phaser.Physics.Arcade.Sprite {
         } else {
             this.setAccelerationX(0);
         }
+
+        if (this.invincible) {
+            this.setAlpha(0.5);
+        } else {
+            this.clearAlpha();
+        }
     }
 
+    // Access Functions -------------------------------------------------------
     getFuel() {
         return this.fuel;
     }
@@ -48,8 +55,19 @@ class Astronaut extends Phaser.Physics.Arcade.Sprite {
         return this.health;
     }
 
+    getInvincible() {
+        return this.invincible;
+    }
+
+    // Manipulation Procedures ------------------------------------------------
+    reFuel() {
+        this.fuel += 500;
+    }
+
     decrimentHealth() {
-        this.health--;
+        if (!this.invincible) {
+            this.health--;
+        }
     }
 
     toggleInvincible() {

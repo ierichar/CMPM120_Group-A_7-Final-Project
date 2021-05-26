@@ -21,7 +21,7 @@ let config = {
             x:0,
             y:0,
             // debug off for assignment submission
-             debug: true,
+             debug: false,
         },
     },
     scene: [ Menu, Play, GameOver, stageComplete ]

@@ -11,7 +11,12 @@ class Play extends Phaser.Scene {
         this.load.image('space', './assets/SmallStars.png');
         this.load.image('elevator', './assets/Level_1.png');
         // UI
-        this.load.image('miniMap', './assets/SpaceElevator.png');
+        this.load.image('TopBar', './assets/TopBar.png');
+        this.load.image('LeftPanel', './assets/LeftPanel.png');
+        this.load.image('RightPanel', './assets/RightPanel.png');
+        this.load.image('LeftBottomPanel', './assets/LeftBottomPanel.png');
+        this.load.image('RightBottomPanel', './assets/RightBottomPanel.png');
+        
         this.load.image('levelTracker', './assets/Elevator_Indicator.png');
         this.load.image('astrohead', './assets/AstroHead.png');
         this.load.image('heart', './assets/Heart.png');
@@ -30,7 +35,6 @@ class Play extends Phaser.Scene {
 
     create() {
 
-        
         //Keep track of which stage you are on
         this.stageTracker = 1;
 
@@ -101,7 +105,7 @@ class Play extends Phaser.Scene {
             rightTile.visible = false;
             this.rightWall.add(rightTile);
         }
-        
+
         // create stage level tracker
         this.level = 1;
 
@@ -180,6 +184,7 @@ class Play extends Phaser.Scene {
         keyS = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S);
         keyD = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
         keyN = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.N);
+
     }
 
     update() {

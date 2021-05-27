@@ -5,7 +5,14 @@ class Menu extends Phaser.Scene {
 
     preload() {
         this.load.image('gradient', './assets/Background_2.png');
-        this.load.image('space', './assets/SmallStars.png');
+        this.load.image('Menu', './assets/Menu_Panel.png');
+        this.load.image('Title', './assets/Title.png');
+        this.load.image('Play', './assets/Play.png');
+        this.load.image('HowToPlay', './assets/HowToPlay.png');
+        this.load.image('Credits', './assets/Credits.png');
+        this.load.image('earth', './assets/Earth.png');
+        this.load.image('miniElevator', './assets/MiniElevator.png');
+        this.load.image('stars_expanded', './assets/Stars_Expanded.png');
     }
 
     create() {
@@ -22,14 +29,23 @@ class Menu extends Phaser.Scene {
             fixedWidth: 0
         }
 
-        this.gradient_bg = this.add.tileSprite(0, 0, 960, 640, 'gradient').setOrigin(0, 0);
-        this.starfield = this.add.tileSprite(0, 0, 960, 640, 'space').setOrigin(0, 0);
 
-        // display menu text
-        this.add.text(game.config.width/2, game.config.height/2 + borderUISize + borderPadding, 'ORBITAL DESCENT', menuConfig).setOrigin(0.5);
-        this.add.text(game.config.width/2, game.config.height/2 + borderUISize*2 + borderPadding*2, 'Use WASD to move', menuConfig).setOrigin(0.5);
-        this.add.text(game.config.width/2, game.config.height/2 + borderUISize*3 + borderPadding*3, 'Press (P) to play!', menuConfig).setOrigin(0.5);
-        this.add.text(game.config.width/2, game.config.height/2 + borderUISize*4 + borderPadding*4, 'Avoid falling obstacles and survive', menuConfig).setOrigin(0.5);
+        this.gradient_bg = this.add.tileSprite(0, 0, 960, 640, 'gradient').setOrigin(0, 0);
+        
+        this.stars_e = this.add.image(game.config.width/2, 520, 'stars_expanded');
+        this.mini_e = this.add.image(500, 850, 'miniElevator');
+        this.earth = this.add.image(500, 850, 'earth');
+        this.mini_e.setOrigin(2, 0.5);
+
+        this.menu = this.add.tileSprite(0, 0, 960, 640, 'Menu').setOrigin(0, 0);
+
+        this.title = this.add.tileSprite(85, 150, 807, 79, 'Title').setOrigin(0, 0);
+        this.play = this.add.tileSprite(420, 280, 142, 65, 'Play').setOrigin(0, 0);
+        this.howToplay = this.add.tileSprite(300, 350, 388, 65, 'HowToPlay').setOrigin(0, 0);
+        this.credits = this.add.tileSprite(370, 420, 248, 65, 'Credits').setOrigin(0, 0);
+        
+        //this.starfield = this.add.tileSprite(0, 0, 960, 640, 'space').setOrigin(0, 0);
+
 
         // define keys
         keyP = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.P);
@@ -39,6 +55,9 @@ class Menu extends Phaser.Scene {
         if (Phaser.Input.Keyboard.JustDown(keyP)) {
             this.scene.start('playScene');
         }
-        this.starfield.tilePositionY += 1;
+        //this.starfield.tilePositionY += 1;
+        this.earth.rotation += 0.003
+        this.mini_e.rotation += 0.003
+        this.stars_e.rotation += 0.003
     }
 }

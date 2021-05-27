@@ -18,8 +18,8 @@ class Play extends Phaser.Scene {
         this.load.image('RightBottomPanel', './assets/RightBottomPanel.png');
         
         this.load.image('levelTracker', './assets/Elevator_Indicator.png');
-        this.load.image('astrohead', './assets/AstroHead.png');
-        this.load.image('heart', './assets/Heart.png');
+        this.load.image('astrohead', './assets/AstronautHead.png');
+        this.load.image('heart', './assets/BlueHeart.png');
         this.load.image('transmit', './assets/IncomingTransmission.png');
         // game objects
         this.load.image('Astronaut', './assets/SmallAstronaut.png');
@@ -86,6 +86,14 @@ class Play extends Phaser.Scene {
 
                 // create stage gravity (velocity value)
                 this.stageGravity = 80;
+        
+        //import UI 
+        this.UI_TopBar = this.add.image(game.config.width/2, 20, 'TopBar');
+        this.UI_LeftPanel = this.add.image(115, 70, 'LeftPanel');
+        this.UI_RightPanel = this.add.image(850, 70, 'RightPanel');
+        this.UI_LeftBottomPanel = this.add.image(115, 580, 'LeftBottomPanel');
+        this.UI_RightBottomPanel = this.add.image(850, 580, 'RightBottomPanel');
+        
 
         //create the left wall
         this.leftWall =  this.add.group();
@@ -173,10 +181,13 @@ class Play extends Phaser.Scene {
         // create global map
         this.miniMap = this.add.image(borderUISize + borderPadding, borderPadding + borderUISize, 'miniMap').setOrigin(0, 0);
         this.levelTracker = this.add.image(borderUISize + borderPadding*3.75, 0 + borderUISize*2.8 + borderPadding, 'levelTracker', 0 ,30);
-        this.heart1 = this.add.image(game.config.width - borderUISize, borderUISize + borderPadding, 'heart');
-        this.heart2 = this.add.image(game.config.width - borderUISize*2, borderUISize + borderPadding, 'heart');
-        this.heart3 = this.add.image(game.config.width - borderUISize*3, borderUISize + borderPadding, 'heart');
-        this.astrohead = this.add.image(game.config.width - borderUISize*4.5, borderUISize + borderPadding, 'astrohead');
+        this.heart1 = this.add.image(120, 82, 'heart');
+        this.heart2 = this.add.image(160, 85, 'heart');
+        this.heart3 = this.add.image(200, 88, 'heart');
+        this.astrohead = this.add.image(40, 65, 'astrohead');
+
+        // this.UI_LeftPanel = this.add.image(115, 70, 'LeftPanel');
+
 
         // define keys
         keyW = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);

@@ -36,7 +36,7 @@ class Play extends Phaser.Scene {
     create() {
 
         //Keep track of which stage you are on
-        this.stageTracker = 1;
+        this.stageTracker = 2;
 
 
         // temporary ui scheme
@@ -142,6 +142,16 @@ class Play extends Phaser.Scene {
             }
         })
 
+        // create hazard group
+        this.platformGroup = this.add.group({
+             runChildUpdate: true,
+         });
+
+        //create transition group
+        this.transitionGroup = this.add.group({
+            runChildUpdate: true,
+        });
+
         //add colliders (IMPORTANT: make sure colliders are placed BELOW creation of sprites; it will error otherwise)
         this.physics.add.collider(this.player, this.leftWall, this.touchWall, false, this);
         this.physics.add.collider(this.player, this.rightWall, this.touchWall, false, this);
@@ -165,10 +175,8 @@ class Play extends Phaser.Scene {
             this.hazardGroup.add(this.spikeyRoof);
         }
 
-        this.escapePod = this.physics.add.sprite( 480, 500, 'H_Beam', 0).setScale(12,0.25);
-        this.escapePod.body.immovable = true;
+        this.escapePodIsSpawned = false;
 
-        this.physics.add.collider(this.player, this.escapePod,this.stageCompletion, false, this);
 
 
         // TEMP: create fuel display
@@ -217,7 +225,15 @@ class Play extends Phaser.Scene {
         else {
             this.keyIsPressed = false;
         }
+        //here is a lockout check to see if a key  is still being pressed. If no, you can reset the first loop next time an update check runs.
+        if((keyA.isDown || keyD.isDown || keyW.isDown|| keyS.isDown)&& (this.player.fuel > 0)){
+            this.keyIsPressed = true;
+        }
+        else{
+            this.keyIsPressed = false;
+        }
 
+        //console.log(this.player.body.velocity);
         this.player.update();
      
         this.player.body.setDragX(this.DRAG);
@@ -227,6 +243,9 @@ class Play extends Phaser.Scene {
 
         // player/hazard collision
         this.physics.world.collide(this.player, this.hazardGroup, this.hazardCollision, null, this);
+
+        // player/platform collision
+        this.physics.world.collide(this.player, this.platformGroup, this.platformCollision, null, this);
 
         // update displays
         this.displayFuel.text = this.player.getFuel();
@@ -259,9 +278,19 @@ class Play extends Phaser.Scene {
             }
         }
 
-        if ((this.level > 5) && (this.level < 7)) {
-            console.log("bruh");
-            this.escapePod.Y -= 1;
+        if((this.level > 5) && (this.level < 7)){
+        
+            if(this.escapePodIsSpawned == false){
+                //this.escapePod = this.physics.add.sprite( 480, 500, 'H_Beam', 0).setScale(12,0.25);
+                //this.escapePod.body.immovable = true;
+                this.addTransition();
+                this.physics.add.collider(this.player, this.transitionGroup,this.stageCompletion, false, this);
+                this.escapePodIsSpawned = true;
+            }
+            else{
+                //escapePod.setVelocityY(this.stageGravity *-1);
+                this.transitionGroup.incY(-1);
+            }
         }
     }
 
@@ -298,6 +327,36 @@ class Play extends Phaser.Scene {
                 break;
             }
         }
+        if(this.stageTracker == 2){
+            switch (rand_obj) {
+                case 0:
+                    let leftPlatform = new Platform(this, 200, 680, 'drill', 0).setScale(0.35);
+                    leftPlatform.setVelocityY(-this.stageGravity);
+                    this.platformGroup.add(leftPlatform);
+                    break;
+                case 1:
+                    let midPlatform = new Platform(this, 480, 680, 'wrench', 0).setScale(0.35);
+                    midPlatform.setVelocityY(-this.stageGravity);
+                    this.platformGroup.add(midPlatform);
+                    break;
+                case 2:
+                    let rightPlatform = new Platform(this, 700, 680, 'drill', 0).setScale(0.35);
+                    rightPlatform.setVelocityY(-this.stageGravity);
+                    this.platformGroup.add(rightPlatform);
+                    break;
+                case 3:
+                    //let lbeam = new Hazard(this, rand_x_pos, 0, 'L_Beam', 0).setScale(0.35);
+                    //lbeam.setVelocityY(this.stageGravity);
+                    //this.hazardGroup.add(lbeam);
+                    //break;
+                }
+        }
+    }
+
+    addTransition() {
+        let escapePod = new Transition(this, 480, 900, 'H_Beam', 0).setScale(12,0.25);
+        this.transitionGroup.add(escapePod);
+        
     }
 
     // Pre: x position, y position to place in world
@@ -324,7 +383,10 @@ class Play extends Phaser.Scene {
             this.trackOneBGM.mute = true;
         }
     }
-    
+
+    platformCollision(){
+
+    }
     touchWall() {
         if(keyA.isDown || keyD.isDown){
             

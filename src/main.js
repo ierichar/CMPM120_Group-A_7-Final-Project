@@ -21,7 +21,7 @@ let config = {
             x:0,
             y:0,
             // debug off for assignment submission
-             debug: false,
+             debug: true,
         },
     },
     scene: [ Menu, Play, GameOver, stageComplete ]
@@ -31,6 +31,7 @@ let game = new Phaser.Game(config);
 
 //variable
 const tileSize = 280;
+const globalGravity = 500;
 // set UI sizes
 let borderUISize = game.config.height / 15;
 let borderPadding = borderUISize / 3;

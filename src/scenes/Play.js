@@ -7,30 +7,29 @@ class Play extends Phaser.Scene {
 
     preload() {
         // environment
-        this.load.image('gradient', './assets/Background_2.png');
-        this.load.image('space', './assets/SmallStars.png');
-        this.load.image('elevator', './assets/Level_1.png');
+        this.load.image('gradient', './assets/Menu/Background_2.png');
+        this.load.image('space', './assets/GeneralAssets/SmallStars.png');
+        this.load.image('elevator', './assets/Level_1/Level_1.png');
         // UI
-        this.load.image('TopBar', './assets/TopBar.png');
-        this.load.image('LeftPanel', './assets/LeftPanel.png');
-        this.load.image('RightPanel', './assets/RightPanel.png');
-        this.load.image('LeftBottomPanel', './assets/LeftBottomPanel.png');
-        this.load.image('RightBottomPanel', './assets/RightBottomPanel.png');
+        this.load.image('TopBar', './assets/HUD_UI/TopBar.png');
+        this.load.image('LeftPanel', './assets/HUD_UI/LeftPanel.png');
+        this.load.image('RightPanel', './assets/HUD_UI/RightPanel.png');
+        this.load.image('LeftBottomPanel', './assets/HUD_UI/LeftBottomPanel.png');
+        this.load.image('RightBottomPanel', './assets/HUD_UI/RightBottomPanel.png');
         
-        this.load.image('levelTracker', './assets/Elevator_Indicator.png');
-        this.load.image('astrohead', './assets/AstronautHead.png');
-        this.load.image('heart', './assets/BlueHeart.png');
-        this.load.image('transmit', './assets/IncomingTransmission.png');
+        this.load.image('levelTracker', './assets/HUD_UI/Elevator_Indicator.png');
+        this.load.image('astrohead', './assets/HUD_UI/AstronautHead.png');
+        this.load.image('heart', './assets/HUD_UI/BlueHeart.png');
         // game objects
-        this.load.image('Astronaut', './assets/SmallAstronaut.png');
-        this.load.image('L_Beam', './assets/L_Beam.png');
-        this.load.image('H_Beam', './assets/H_Beam.png');
-        this.load.image('drill', './assets/drill.png');
-        this.load.image('wrench', './assets/wrench.png');
+        this.load.image('Astronaut', './assets/GeneralAssets/SmallAstronaut.png');
+        this.load.image('L_Beam', './assets/Level_1/L_Beam.png');
+        this.load.image('H_Beam', './assets/Level_1/H_Beam.png');
+        this.load.image('drill', './assets/Level_1/drill.png');
+        this.load.image('wrench', './assets/Level_1/wrench.png');
         // audio
-        this.load.audio('trackOne', './assets/trackOne.mp3');
-        this.load.audio('slap', './assets/wallSlap.mp3');
-        this.load.audio('jetpack', './assets/jetpackOne.mp3');
+        this.load.audio('trackOne', './assets/Sounds/trackOne.mp3');
+        this.load.audio('slap', './assets/Sounds/wallSlap.mp3');
+        this.load.audio('jetpack', './assets/Sounds/jetpackOne.mp3');
     }
 
     create() {

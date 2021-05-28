@@ -4,15 +4,15 @@ class Menu extends Phaser.Scene {
     }
 
     preload() {
-        this.load.image('gradient', './assets/Background_2.png');
-        this.load.image('Menu', './assets/Menu_Panel.png');
-        this.load.image('Title', './assets/Title.png');
-        this.load.image('Play', './assets/Play.png');
-        this.load.image('HowToPlay', './assets/HowToPlay.png');
-        this.load.image('Credits', './assets/Credits.png');
-        this.load.image('earth', './assets/Earth.png');
-        this.load.image('miniElevator', './assets/MiniElevator.png');
-        this.load.image('stars_expanded', './assets/Stars_Expanded.png');
+        this.load.image('gradient', './assets/Menu/Background_2.png');
+        this.load.image('Menu', './assets/Menu/Menu_Panel.png');
+        this.load.image('Title', './assets/Menu/Title.png');
+        this.load.image('Play', './assets/Menu/Play.png');
+        this.load.image('HowToPlay', './assets/Menu/HowToPlay.png');
+        this.load.image('Credits', './assets/Menu/Credits.png');
+        this.load.image('earth', './assets/Menu/Earth.png');
+        this.load.image('miniElevator', './assets/Menu/MiniElevator.png');
+        this.load.image('stars_expanded', './assets/Menu/Stars_Expanded.png');
     }
 
     create() {

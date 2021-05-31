@@ -30,6 +30,7 @@ class Play extends Phaser.Scene {
         this.load.audio('trackOne', './assets/Sounds/trackOne.mp3');
         this.load.audio('slap', './assets/Sounds/wallSlap.mp3');
         this.load.audio('jetpack', './assets/Sounds/jetpackOne.mp3');
+        this.load.audio('clang', './assets/Sounds/clang.mp3');
     }
 
     create() {
@@ -69,6 +70,13 @@ class Play extends Phaser.Scene {
             rate: 1,
             loop: false
         });
+
+        this.clang = this.sound.add('clang', {
+            mute:false,
+            volume: .8,
+            rate: 1,
+            loop:false
+        })
 
         this.jetpackAudio = this.sound.add('jetpack', { 
             mute: false,
@@ -302,6 +310,7 @@ class Play extends Phaser.Scene {
         // https://phaser.discourse.group/t/solved-making-a-player-invincible-for-a-brief-time/3211
         this.physics.world.collide(this.player, this.hazardGroup, function(player, hazard) {
             if (player.getInvincible() == false) {
+                this.clang.play();
                 player.alpha = 0.5;
                 player.decrimentHealth();
                 player.toggleInvincible();

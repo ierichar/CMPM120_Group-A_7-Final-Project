@@ -7,7 +7,7 @@ class GameOver extends Phaser.Scene {
         this.load.image('gradient', './assets/SmallBackground.png');
         this.load.image('space', './assets/SmallStars.png');
 
-        this.load.audio('gameOver', './assets/gameOver.mp3');
+        this.load.audio('gameOver', './assets/Sounds/gameOver.mp3');
     }
 
     create() {

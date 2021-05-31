@@ -12,13 +12,13 @@ class Astronaut extends Phaser.Physics.Arcade.Sprite {
         this.setMaxVelocity(globalGravity);
         
         // drag physics
-        this.DRAG = 100;
+        this.DRAG = 10000;
     }
 
     update() {
         // keep player drag updated
-        this.body.setDragX(this.DRAG);
-        this.body.setDragY(this.DRAG);
+        this.body.setAccelerationX(this.DRAG);
+        this.body.setAccelerationY(this.DRAG);
 
         if (keyW.isDown && this.fuel > 0) {
             this.setAccelerationY(-500);

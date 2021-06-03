@@ -129,6 +129,7 @@ var button;
 
     playGameScene(){
         this.menuAudio.mute = true;
+        globalLevel = 1;
         this.scene.start('playScene');
     }
 }

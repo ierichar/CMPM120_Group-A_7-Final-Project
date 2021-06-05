@@ -1,0 +1,10 @@
+@font-face {
+    font-family: 'alarm clock';
+    src: url('alarmclock.woff2') format('woff2'),
+        url('alarmclock.woff') format('woff');
+		url('alarm clock.ttf') format('ttf');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+

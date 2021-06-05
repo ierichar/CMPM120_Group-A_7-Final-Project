@@ -6,6 +6,10 @@ class GameOver extends Phaser.Scene {
     preload() {
         this.load.image('gradient', './assets/SmallBackground.png');
         this.load.image('space', './assets/SmallStars.png');
+        this.load.image('gameOverBorder', './assets/GameOver/GameOverBorder.png');
+        this.load.image('gameOverLettering', './assets/GameOver/GameOverLettering.png');
+        this.load.image('menuButton', './assets/GameOver/Menu.png');
+        this.load.image('playAgainButton', './assets/GameOver/PlayAgain.png');
 
         this.load.audio('gameOver', './assets/Sounds/gameOver.mp3');
     }
@@ -36,13 +40,13 @@ class GameOver extends Phaser.Scene {
         this.gradient_bg = this.add.tileSprite(0, 0, 960, 640, 'gradient').setOrigin(0, 0);
         this.starfield = this.add.tileSprite(0, 0, 960, 640, 'space').setOrigin(0, 0);
 
-        // display menu text
-        this.add.text(game.config.width/2, game.config.height/2 + borderUISize*2 + borderPadding*2, 'GAME OVER', menuConfig).setOrigin(0.5);
-        this.add.text(game.config.width/2, game.config.height/2 + borderUISize*3 + borderPadding*3, 'Press (P) to play again!', menuConfig).setOrigin(0.5);
-        this.add.text(game.config.width/2, game.config.height/2 + borderUISize*4 + borderPadding*4, 'Press (M) to go to menu!', menuConfig).setOrigin(0.5);
+        this.gameOverB = this.add.image(0, 0, 'gameOverBorder').setOrigin(0, 0);
+        this.gameOverL = this.add.image(140, 100, 'gameOverLettering').setOrigin(0, 0);
 
+        this.menuButton = this.add.tileSprite(675, 400, 110, 50, 'menuButton').setOrigin(0, 0);
+        this.playAgainButton = this.add.tileSprite(200, 400, 110, 50, 'playAgainButton').setOrigin(0, 0);
 
-        // define keys
+        // temp: define keys
         keyP = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.P);
         keyM = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.M);
     }

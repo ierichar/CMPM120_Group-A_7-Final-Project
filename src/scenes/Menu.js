@@ -42,7 +42,7 @@ class Menu extends Phaser.Scene {
             fixedWidth: 0
         }
 
-var button;
+        var button;
         this.gradient_bg = this.add.tileSprite(0, 0, 960, 640, 'gradient').setOrigin(0, 0);
         
         this.stars_e = this.add.image(game.config.width/2, 520, 'stars_expanded');
@@ -56,8 +56,8 @@ var button;
 
         this.title = this.add.tileSprite(85, 150, 807, 79, 'Title').setOrigin(0, 0);
         this.play = this.add.tileSprite(420, 280, 142, 65, 'Play').setOrigin(0, 0);
-        this.howToplay = this.add.tileSprite(300, 350, 388, 65, 'HowToPlay').setOrigin(0, 0);
-        this.credits = this.add.tileSprite(370, 420, 248, 65, 'Credits').setOrigin(0, 0);
+        // this.howToplay = this.add.tileSprite(300, 350, 388, 65, 'HowToPlay').setOrigin(0, 0);
+        this.credits = this.add.tileSprite(370, 350, 248, 65, 'Credits').setOrigin(0, 0);
         
         //this.starfield = this.add.tileSprite(0, 0, 960, 640, 'space').setOrigin(0, 0);
 
@@ -69,7 +69,7 @@ var button;
         
         this.play.setInteractive();
         this.credits.setInteractive();
-        this.howToplay.setInteractive();
+        // this.howToplay.setInteractive();
 
 
         this.play.on("pointerover", ()=> {
@@ -98,23 +98,23 @@ var button;
         })
 
         this.credits.on("pointerup", () => {
-            //code here
+            this.creditsGameScene();
         })
 
-        //how to play events
-        this.howToplay.on("pointerover", ()=> {
-            this.astronaut.setVisible(true);
-            this.astronaut.x = this.howToplay.x - 30
-            this.astronaut.y = this.howToplay.y + 30;
-        })
+        // //how to play events
+        // this.howToplay.on("pointerover", ()=> {
+        //     this.astronaut.setVisible(true);
+        //     this.astronaut.x = this.howToplay.x - 30
+        //     this.astronaut.y = this.howToplay.y + 30;
+        // })
 
-        this.howToplay.on("pointerout", ()=> {
-            this.astronaut.setVisible(false);
-        })
+        // this.howToplay.on("pointerout", ()=> {
+        //     this.astronaut.setVisible(false);
+        // })
 
-        this.howToplay.on("pointerup", () => {
-                //this.playGameScene();
-        })
+        // this.howToplay.on("pointerup", () => {
+        //         //this.playGameScene();
+        // })
 
     }
 
@@ -131,5 +131,10 @@ var button;
         this.menuAudio.mute = true;
         globalLevel = 1;
         this.scene.start('playScene');
+    }
+
+    creditsGameScene() {
+        this.menuAudio.mute = true;
+        this.scene.start('creditsScene');
     }
 }

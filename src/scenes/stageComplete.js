@@ -1,4 +1,4 @@
-class stageComplete extends Phaser.Scene {
+class StageComplete extends Phaser.Scene {
     constructor() {
         super("stageCompleteScene");
     }

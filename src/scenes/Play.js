@@ -11,6 +11,7 @@ class Play extends Phaser.Scene {
         this.load.image('gradient', './assets/Menu/Background_2.png');
         this.load.image('space', './assets/GeneralAssets/SmallStars.png');
         this.load.image('elevator', './assets/Level_1/Level_1.png');
+        this.load.image('elevator2', './assets/Level_2/Level_2.png');
         // UI
         this.load.image('TopBar', './assets/HUD_UI/TopBar.png');
         this.load.image('LeftPanel', './assets/HUD_UI/LeftPanel.png');
@@ -21,17 +22,37 @@ class Play extends Phaser.Scene {
         this.load.image('levelTracker', './assets/HUD_UI/Elevator_Indicator.png');
         this.load.image('astrohead', './assets/HUD_UI/AstronautHead.png');
         this.load.image('heart', './assets/HUD_UI/BlueHeart.png');
+        this.load.image('FuelCanister', './assets/FuelCanister.png');
         // game objects
         this.load.image('Astronaut', './assets/GeneralAssets/SmallAstronaut.png');
         this.load.image('L_Beam', './assets/Level_1/L_Beam.png');
         this.load.image('H_Beam', './assets/Level_1/H_Beam.png');
         this.load.image('drill', './assets/Level_1/drill.png');
         this.load.image('wrench', './assets/Level_1/wrench.png');
+        this.load.image('transitionLab', './assets/Level_2/ResearchLab_Hatch.png');
+        this.load.image('spikeRoof', './assets/Level_2/spikeRoof.png');
+        this.load.image('LeftPlatform', './assets/Level_2/LeftPlatform.png');
+        this.load.image('RightPlatform', './assets/Level_2/RightPlatform.png');
+        this.load.image('MiddlePlatform', './assets/Level_2/MiddlePlatform.png');
+
+        //load goop
+        this.load.image('Goop1', './assets/Level_2/Goop1.png');
+        this.load.image('Goop2', './assets/Level_2/Goop2.png');
+        this.load.image('Goop3', './assets/Level_2/Goop3.png');
+        this.load.image('Goop4', './assets/Level_2/Goop4.png');
+        this.load.image('Goop5', './assets/Level_2/Goop5.png');
+        this.load.image('Goop6', './assets/Level_2/Goop6.png');
+        this.load.image('Goop7', './assets/Level_2/Goop7.png');
+
         // audio
         this.load.audio('trackOne', './assets/Sounds/trackOne.mp3');
+        this.load.audio('trackTwo', './assets/Sounds/final-game-level-2-audio.mp3');
+        this.load.audio('trackThree', './assets/Sounds/final-game-level-3-part-1-audio.mp3');
         this.load.audio('slap', './assets/Sounds/wallSlap.mp3');
         this.load.audio('jetpack', './assets/Sounds/jetpackOne.mp3');
         this.load.audio('clang', './assets/Sounds/clang.mp3');
+        this.load.audio('pickupNoise', './assets/Sounds/pickupNoise.mp3');
+        this.load.audio('tutorialSong', './assets/Sounds/final-game-tutorial-audio.mp3');
     }
 
     //========================= CREATE() ======================================
@@ -39,6 +60,8 @@ class Play extends Phaser.Scene {
         // Predetermined level milestones -------------------------------------
         // create stage level tracker
         this.level = globalLevel;
+
+        //this.physics.world.gravity.y = 20;
 
         // Create Audio -------------------------------------------------------
         //load the audio
@@ -48,9 +71,36 @@ class Play extends Phaser.Scene {
             rate: 1,
             loop: true 
         });
+        this.trackTwoBGM = this.sound.add('trackTwo', { 
+            mute: false,
+            volume: .95,
+            rate: 1,
+            loop: true 
+        });
+        this.trackThreeBGM = this.sound.add('trackThree', { 
+            mute: false,
+            volume: .85,
+            rate: 1,
+            loop: true 
+        });
+        this.trackTutorial = this.sound.add('tutorialSong', { 
+            mute: false,
+            volume: .85,
+            rate: 1,
+            loop: true 
+        });
 
         if (this.level > stage0Start && this.level < stage1Start) {
             this.trackOneBGM.play();
+        }
+        if (this.level > stage1Start && this.level < stage2Start) {
+            this.trackTutorial.play();
+        }
+        if (this.level > stage2Start && this.level < stage3Start) {
+            this.trackTwoBGM.play();
+        }
+        if (this.level > stage3Start && this.level < stage3End) {
+            this.trackThreeBGM.play();
         }
 
         this.slapAudio = this.sound.add('slap', { 
@@ -67,6 +117,13 @@ class Play extends Phaser.Scene {
             loop:false
         })
 
+        this.pickupAudio = this.sound.add('pickupNoise', { 
+            mute: false,
+            volume: .8,
+            rate: 1,
+            loop: false
+        });
+
         this.jetpackAudio = this.sound.add('jetpack', { 
             mute: false,
             volume: .3,
@@ -79,6 +136,8 @@ class Play extends Phaser.Scene {
         this.space = this.add.image(480, 320, 'gradient');
         this.starfield = this.add.tileSprite(480, 320, 960, 640, 'space');
         this.elevator = this.add.tileSprite(480, 320, 0, 0, 'elevator');
+        this.elevator2 = this.add.tileSprite(480,320,0,0, 'elevator2').setAlpha(0);
+
 
         //create the left wall
         this.leftWall =  this.add.group();
@@ -122,6 +181,7 @@ class Play extends Phaser.Scene {
         });
         // add overlap between player
         this.physics.add.overlap(this.player, this.fuelGroup, (obj1, obj2) => {
+            this.pickupAudio.play();
             obj1.reFuel();
             obj2.destroy();
         })
@@ -174,7 +234,21 @@ class Play extends Phaser.Scene {
             loop: true
         });
 
+        // stage 3 goop timer
+        this.goopTimer = this.time.addEvent({
+            delay: 600,
+            callback: this.addGoop,
+            callbackScope: this,
+            loop: true
+        });
+
         this.escapePodIsSpawned = false;
+
+        //in game hazard
+        this.spikeyRoof = this.physics.add.sprite(480, 20, 'spikeRoof', 0).setScale(1);
+        this.spikeyRoof.body.immovable = true;
+        this.spikeyRoof.setAlpha(0);
+
 
         // Create UI ----------------------------------------------------------
         // import UI 
@@ -210,6 +284,9 @@ class Play extends Phaser.Scene {
         this.displayHealth = this.add.text(90, 120, this.player.getHealth(), menuConfig);
         // TEMP: create level descent tracker
         this.displayLevel = this.add.text(75, 550, Math.floor(this.level), menuConfig);
+
+        this.physics.add.collider(this.player, this.platformGroup);
+
     }
 
     //========================= UPDATE() ======================================
@@ -217,8 +294,15 @@ class Play extends Phaser.Scene {
         // Game State Updates -------------------------------------------------
         if (this.gameOver == true) {
             this.trackOneBGM.stop();
+            this.trackTutorial.play();
+            this.trackTwoBGM.stop();
+            this.trackThreeBGM.stop();
+            this.trackTutorial.stop();
             this.jetpackAudio.stop();
             this.trackOneBGM.mute = true;
+            this.trackTutorial.mute = true;
+            this.trackTwoBGM.mute = true;
+            this.trackThreeBGM.mute = true;
             this.scene.start('gameOverScene');
         }
 
@@ -271,18 +355,21 @@ class Play extends Phaser.Scene {
                 this.space.tilePositionY -= this.stageGravity/100;
                 this.starfield.tilePositionY -= this.stageGravity/100;
                 this.elevator.tilePositionY -= this.stageGravity/100;
+                this.elevator2.tilePositionY -= this.stageGravity/100;
+                this.level += 1/200;
             } else {
                 // update background
                 this.space.tilePositionY += this.stageGravity/100;
                 this.starfield.tilePositionY += this.stageGravity/100;
                 this.elevator.tilePositionY += this.stageGravity/100;
+                this.elevator2.tilePositionY += this.stageGravity/100;
                 this.level += 1/100;
             }
         }
 
         // spawn transition between 0 -> 1, and 1 -> 2
         if ((this.level > stage0End - 2.5 && this.level < stage0End) ||
-            (this.level > stage1End - 2.5 && this.level < stage2End) ||
+            (this.level > stage1End - 2.5 && this.level < stage1End) ||
             (this.level > stage2End - 2.5 && this.level < stage2End)) {
             if (this.escapePodIsSpawned == false) {
                 //this.escapePod = this.physics.add.sprite( 480, 500, 'H_Beam', 0).setScale(12,0.25);
@@ -296,12 +383,13 @@ class Play extends Phaser.Scene {
             }
         }
 
-        // spike roof at level 2
-        if (this.level == stage2Start) {
-            this.spikeyRoof = this.physics.add.sprite(480, 20, 'H_Beam', 0).setScale(12, 0.25);
-            this.spikeyRoof.body.immovable = true;
+        if(this.level > stage2Start){
+            this.elevator.setAlpha(0);
+            this.elevator2.setAlpha(1);
+            this.spikeyRoof.setAlpha(1);
             this.hazardGroup.add(this.spikeyRoof);
         }
+
 
         // Physics updates ----------------------------------------------------
         // inspiration and code credit to ThePandaJam:
@@ -366,7 +454,7 @@ class Play extends Phaser.Scene {
         let rand_x_pos = Phaser.Math.Between(elevatorLeft + 100, elevatorRight - 100);
         let rand_velocity = Phaser.Math.Between(200, 400);
         // let rand_rotation = Phaser.Math.Between(-100, 100);
-        if (this.level > stage1Start && this.level < stage2Start) {
+        if (this.level > stage1Start && this.level < stage3Start) {
             switch (rand_obj) {
                 case 0:
                     let drill = new Hazard(this, rand_x_pos, 0, 'drill', 0).setScale(0.35);
@@ -398,43 +486,78 @@ class Play extends Phaser.Scene {
                     break;
                 }
         }
-        if (this.level > this.stage2Start && this.level < this.stage3Start) {
+        if (this.level > stage2Start && this.level < stage2End) {
             switch (rand_obj) {
                 case 0:
-                    let leftPlatform = new Platform(this, 200, 680, 'drill', 0).setScale(0.35);
+                    let leftPlatform = new Platform(this, 330, 680, 'LeftPlatform', 0).setScale(.8, .5);
                     leftPlatform.setVelocityY(-this.stageGravity);
                     this.platformGroup.add(leftPlatform);
                     break;
                 case 1:
-                    let midPlatform = new Platform(this, 480, 680, 'wrench', 0).setScale(0.35);
-                    midPlatform.setVelocityY(-this.stageGravity);
-                    this.platformGroup.add(midPlatform);
+                    let midLeftPlatform = new Platform(this, 400, 680, 'MiddlePlatform', 0).setScale(.8, .5);
+                    midLeftPlatform.setVelocityY(-this.stageGravity);
+                    this.platformGroup.add(midLeftPlatform);
                     break;
                 case 2:
-                    let rightPlatform = new Platform(this, 700, 680, 'drill', 0).setScale(0.35);
+                    let rightPlatform = new Platform(this, 630, 680, 'RightPlatform', 0).setScale(.8,.5);
                     rightPlatform.setVelocityY(-this.stageGravity);
                     this.platformGroup.add(rightPlatform);
                     break;
                 case 3:
-                    //let lbeam = new Hazard(this, rand_x_pos, 0, 'L_Beam', 0).setScale(0.35);
-                    //lbeam.setVelocityY(this.stageGravity);
-                    //this.hazardGroup.add(lbeam);
-                    //break;
+                    let midRightPlatform = new Platform(this, 560, 680, 'MiddlePlatform', 0).setScale(.8,.5);
+                    midRightPlatform.setVelocityY(-this.stageGravity);
+                    this.platformGroup.add(midRightPlatform);
+                    break;
                 }
         }
+        if(this.level > stage3Start && this.level < stage3End) {
+
+        }
     }
+
+    addGoop(){
+        let rand_obj = Phaser.Math.Between(0, 2);
+        if (this.level > stage3Start && this.level < stage3End) {
+            switch (rand_obj) {
+                case 0:
+                    let goop1 = new Hazard(this, 710, 0, 'Goop1', 0).setScale(.3);
+                    goop1.setVelocityY(this.stageGravity);
+                    this.hazardGroup.add(goop1);
+                    let goop7 = new Hazard(this, 250, 0, 'Goop7', 0).setScale(.3);;
+                    goop7.setVelocityY(this.stageGravity);
+                    this.hazardGroup.add(goop7);
+                    break;
+                case 1:
+                    let goop4 = new Hazard(this, 250, 0, 'Goop4', 0).setScale(.3);;
+                    goop4.setVelocityY(this.stageGravity);
+                    this.hazardGroup.add(goop4);
+                    let goop3 = new Hazard(this, 710, 0, 'Goop3', 0).setScale(.3);;
+                    goop3.setVelocityY(this.stageGravity);
+                    this.hazardGroup.add(goop3);
+                    break;
+                case 2:
+                    let goop5 = new Hazard(this, 250, 0, 'Goop5', 0).setScale(.3);;
+                    goop5.setVelocityY(this.stageGravity);
+                    this.hazardGroup.add(goop5);
+                    let goop6 = new Hazard(this, 710, 0, 'Goop6', 0).setScale(.3);;
+                    goop6.setVelocityY(this.stageGravity);
+                    this.hazardGroup.add(goop6);
+                    break;
+            }
+    }
+}
 
     // addTransition()
     // adds the transition object into the scene
     addTransition() {
-        let escapePod = new Transition(this, 480, 900, 'H_Beam', 0).setScale(12,0.25);
+        let escapePod = new Transition(this, 480, 900, 'transitionLab', 0).setScale(1,1);
         this.transitionGroup.add(escapePod);
     }
 
     // addFuel()
     // add a fuel container into the scene
     addFuel() {
-        let fuel = new Hazard(this, this.player.x, 0, 'levelTracker', 0);
+        let fuel = new Hazard(this, this.player.x, 0, 'FuelCanister', 0);
         fuel.setVelocityY(globalGravity/2);
         this.fuelGroup.add(fuel);
     }
@@ -458,6 +581,9 @@ class Play extends Phaser.Scene {
     // starts new scene when triggered
     stageCompletion(){
         this.trackOneBGM.mute = true;
+        this.trackTutorial.mute = true;
+        this.trackTwoBGM.mute = true;
+        this.trackThreeBGM.mute = true;
         globalLevel = this.level + 13;
         this.scene.pause('Play');
         this.scene.start('stageCompleteScene');

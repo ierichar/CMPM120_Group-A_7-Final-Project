@@ -14,6 +14,7 @@ class GameOver extends Phaser.Scene {
         this.load.image('Goop4', './assets/Level_2/Goop4.png');
 
         this.load.audio('gameOver', './assets/Sounds/gameOver.mp3');
+        this.load.audio('gameOverMetal', './assets/Sounds/final-game-game-over-stage-3.mp3');
     }
 
     create() {
@@ -24,7 +25,19 @@ class GameOver extends Phaser.Scene {
             rate: 1,
             loop: false 
         });
+
+        this.GameOverMetal = this.sound.add('gameOverMetal', { 
+            mute: false,
+            volume: .75,
+            rate: 1,
+            loop: false 
+        });
+        if(this.level > stage3Start){
+        this.GameOverMetal.play();
+        }
+        else{
         this.GameOverSong.play();
+        }
 
         let menuConfig = {
             fontFamily: 'Courier',
@@ -95,10 +108,12 @@ class GameOver extends Phaser.Scene {
 
     playGameScene(){
         this.GameOverSong.mute = true;
+        this.GameOverMetal.mute = true;
         this.scene.start('playScene');
     }
     playMenuScene(){
         this.GameOverSong.mute = true;
+        this.GameOverMetal.mute = true;
         this.scene.start('menuScene');
     }
 }

@@ -10,6 +10,7 @@ class Play extends Phaser.Scene {
         this.load.image('space', './assets/GeneralAssets/SmallStars.png');
         this.load.image('elevator', './assets/Level_1/Level_1.png');
         this.load.image('elevator2', './assets/Level_2/Level_2.png');
+        this.load.image('elevator3', './assets/Level_3/Level3_BaseTile.png');
         // UI
         this.load.image('TopBar', './assets/HUD_UI/TopBar.png');
         this.load.image('LeftPanel', './assets/HUD_UI/LeftPanel.png');
@@ -27,10 +28,10 @@ class Play extends Phaser.Scene {
         this.load.image('Astronaut', './assets/GeneralAssets/SmallAstronaut.png');
         this.load.image('L_Beam', './assets/Level_1/L_Beam.png');
         this.load.image('H_Beam', './assets/Level_1/H_Beam.png');
-        this.load.image('drill', './assets/Level_1/drill.png');
-        this.load.image('wrench', './assets/Level_1/wrench.png');
+        this.load.image('drill', './assets/Level_2/Drill.png');
+        this.load.image('wrench', './assets/Level_2/Wrench.png');
         this.load.image('transitionLab', './assets/Level_2/ResearchLab_Hatch.png');
-        this.load.image('spikeRoof', './assets/Level_2/spikeRoof.png');
+        this.load.image('spikeRoof', './assets/Level_2/TopGoopWall.png');
         this.load.image('LeftPlatform', './assets/Level_2/LeftPlatform.png');
         this.load.image('RightPlatform', './assets/Level_2/RightPlatform.png');
         this.load.image('MiddlePlatform', './assets/Level_2/MiddlePlatform.png');
@@ -73,7 +74,7 @@ class Play extends Phaser.Scene {
         });
         this.trackTwoBGM = this.sound.add('trackTwo', { 
             mute: false,
-            volume: .95,
+            volume: 1.1,
             rate: 1,
             loop: true 
         });
@@ -137,6 +138,7 @@ class Play extends Phaser.Scene {
         this.starfield = this.add.tileSprite(480, 320, 960, 640, 'space');
         this.elevator = this.add.tileSprite(480, 320, 0, 0, 'elevator');
         this.elevator2 = this.add.tileSprite(480,320,0,0, 'elevator2').setAlpha(0);
+        this.elevator3 = this.add.tileSprite(480,320,0,0, 'elevator3').setAlpha(0);
 
 
         //create the left wall
@@ -237,7 +239,7 @@ class Play extends Phaser.Scene {
 
         // stage 3 goop timer
         this.goopTimer = this.time.addEvent({
-            delay: 600,
+            delay: 1500,
             callback: this.addGoop,
             callbackScope: this,
             loop: true
@@ -247,8 +249,10 @@ class Play extends Phaser.Scene {
 
         //in game hazard
         this.spikeyRoof = this.physics.add.sprite(480, 20, 'spikeRoof', 0).setScale(1);
+        this.spikeyRoof.body.setSize(this.spikeyRoof.width*1,this.spikeyRoof.height*.7);
         this.spikeyRoof.body.immovable = true;
         this.spikeyRoof.setAlpha(0);
+
 
 
         // Create UI ----------------------------------------------------------
@@ -347,12 +351,16 @@ class Play extends Phaser.Scene {
             || (this.level >= stage3Start && this.level < stage3End)) {
             this.starfield.tilePositionY += 1;
             this.elevator.tilePositionY += 1.3;
+            this.elevator2.tilePositionY += 1.3;
+            this.elevator3.tilePositionY += 1.3;
+            
             if (keyW.isDown && this.player.getFuel() > 0) {
                 // update background
                 this.space.tilePositionY -= this.stageGravity/100;
                 this.starfield.tilePositionY -= this.stageGravity/100;
                 this.elevator.tilePositionY -= this.stageGravity/100;
                 this.elevator2.tilePositionY -= this.stageGravity/100;
+                this.elevator3.tilePositionY -= this.stageGravity/100;
                 this.level += 1/200;
             } else {
                 // update background
@@ -360,6 +368,7 @@ class Play extends Phaser.Scene {
                 this.starfield.tilePositionY += this.stageGravity/100;
                 this.elevator.tilePositionY += this.stageGravity/100;
                 this.elevator2.tilePositionY += this.stageGravity/100;
+                this.elevator3.tilePositionY -= this.stageGravity/100;
                 this.level += 1/100;
             }
         }
@@ -385,6 +394,10 @@ class Play extends Phaser.Scene {
             this.elevator2.setAlpha(1);
             this.spikeyRoof.setAlpha(1);
             this.hazardGroup.add(this.spikeyRoof);
+        }
+        if(this.level > stage3Start) {
+            this.elevator2.setAlpha(0);
+            this.elevator3.setAlpha(1);
         }
 
 
@@ -438,7 +451,7 @@ class Play extends Phaser.Scene {
     // add tutorial objects to scene
     addDummy() {
         if (this.level > stage0Start && this.level < stage0End) {
-            let dummy = new Hazard(this, 480, 0, 'drill', 0).setScale(0.35);
+            let dummy = new Hazard(this, 480, 0, 'drill', 0).setScale(.8);
             dummy.setVelocityY(globalGravity/2);
             this.dummyGroup.add(dummy);
         }
@@ -447,26 +460,26 @@ class Play extends Phaser.Scene {
     // addHazard()
     // randomly spawn hazards
     addHazard() {
-        let rand_obj = Phaser.Math.Between(0, 1);
+        let rand_obj = Phaser.Math.Between(0, 3);
         let rand_x_pos = Phaser.Math.Between(elevatorLeft + 100, elevatorRight - 100);
         let rand_velocity = Phaser.Math.Between(200, 400);
         let rand_rotation = Phaser.Math.Between(-100, 100);
         if (this.level > stage1Start && this.level < stage3Start) {
             switch (rand_obj) {
                 case 0:
-                    let drill = new Hazard(this, rand_x_pos, 0, 'drill', 0).setScale(0.35).setOrigin(.5,.5);
+                    let drill = new Hazard(this, rand_x_pos, 0, 'drill', 0).setScale(1).setOrigin(.5,.5);
                     drill.setVelocityY(rand_velocity);
                     drill.body.setAngularVelocity(rand_rotation);
                     drill.body.setCircle(drill.height/3);
-                    drill.body.setCircle(100, 5, 5);
+                    drill.body.setCircle(50, 0, -25);
                     this.hazardGroup.add(drill);
                     break;
                 case 1:
-                    let wrench = new Hazard(this, rand_x_pos, 0, 'wrench', 0).setScale(0.35);
+                    let wrench = new Hazard(this, rand_x_pos, 0, 'wrench', 0).setScale(1);
                     wrench.setVelocityY(rand_velocity);
                     wrench.body.setAngularVelocity(rand_rotation);
                     wrench.body.setCircle(wrench.width/3);
-                    wrench.body.setCircle(wrench.width/2,0 - 10, -wrench.height-2);
+                    wrench.body.setCircle(35,-25,-5);
                     this.hazardGroup.add(wrench);
                     
                     break;
@@ -520,26 +533,26 @@ class Play extends Phaser.Scene {
         if (this.level > stage3Start && this.level < stage3End) {
             switch (rand_obj) {
                 case 0:
-                    let goop1 = new Hazard(this, 710, 0, 'Goop1', 0).setScale(.3);
+                    let goop1 = new Hazard(this, 705, 0, 'Goop1', 0).setScale(.75);
                     goop1.setVelocityY(this.stageGravity);
                     this.hazardGroup.add(goop1);
-                    let goop7 = new Hazard(this, 250, 0, 'Goop7', 0).setScale(.3);;
+                    let goop7 = new Hazard(this, 255, 0, 'Goop7', 0).setScale(.75);;
                     goop7.setVelocityY(this.stageGravity);
                     this.hazardGroup.add(goop7);
                     break;
                 case 1:
-                    let goop4 = new Hazard(this, 250, 0, 'Goop4', 0).setScale(.3);;
+                    let goop4 = new Hazard(this, 255, 0, 'Goop4', 0).setScale(.75);;
                     goop4.setVelocityY(this.stageGravity);
                     this.hazardGroup.add(goop4);
-                    let goop3 = new Hazard(this, 710, 0, 'Goop3', 0).setScale(.3);;
+                    let goop3 = new Hazard(this, 705, 0, 'Goop3', 0).setScale(.75);;
                     goop3.setVelocityY(this.stageGravity);
                     this.hazardGroup.add(goop3);
                     break;
                 case 2:
-                    let goop5 = new Hazard(this, 250, 0, 'Goop5', 0).setScale(.3);;
+                    let goop5 = new Hazard(this, 255, 0, 'Goop5', 0).setScale(.75);;
                     goop5.setVelocityY(this.stageGravity);
                     this.hazardGroup.add(goop5);
-                    let goop6 = new Hazard(this, 710, 0, 'Goop6', 0).setScale(.3);;
+                    let goop6 = new Hazard(this, 705, 0, 'Goop6', 0).setScale(.75);;
                     goop6.setVelocityY(this.stageGravity);
                     this.hazardGroup.add(goop6);
                     break;

@@ -24,12 +24,12 @@ let config = {
              debug: true,
         },
     },
-    scene: [ Menu, Play, GameOver, stageComplete ]
+    scene: [ Menu, Credits, Play, GameOver, StageComplete ]
 }
 
 let game = new Phaser.Game(config);
 
-// Variable -------------------------------------------------------------------
+// Variables ------------------------------------------------------------------
 // Global Level Tracker
 // NOTE: stage divider is +10 between one end and the next start.
 //       Also, you can adjust levels for debug, but we need to decide

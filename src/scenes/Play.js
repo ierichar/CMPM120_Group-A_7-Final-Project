@@ -3,8 +3,6 @@ class Play extends Phaser.Scene {
         super("playScene");
     }
 
-    //hello peeps!
-
     //========================= PRELOAD() =====================================
     preload() {
         // environment
@@ -17,7 +15,9 @@ class Play extends Phaser.Scene {
         this.load.image('RightPanel', './assets/HUD_UI/RightPanel.png');
         this.load.image('LeftBottomPanel', './assets/HUD_UI/LeftBottomPanel.png');
         this.load.image('RightBottomPanel', './assets/HUD_UI/RightBottomPanel.png');
-        
+        this.load.image('FuelBarOutline', './assets/HUD_UI/FuelBarOutline.png');
+        this.load.image('FuelGauge', './assets/HUD_UI/FuelBar.png');
+
         this.load.image('levelTracker', './assets/HUD_UI/Elevator_Indicator.png');
         this.load.image('astrohead', './assets/HUD_UI/AstronautHead.png');
         this.load.image('heart', './assets/HUD_UI/BlueHeart.png');
@@ -191,12 +191,11 @@ class Play extends Phaser.Scene {
         this.astrohead = this.add.image(40, 65, 'astrohead');
 
         // temporary ui scheme
-        let menuConfig = {
-            fontFamily: 'Courier',
-            fontSize: '28px',
-            backgroundColor: '#F3B141',
-            color: '#843605',
-            align: 'right',
+        let playConfig = {
+            fontFamily: 'alarm clock',
+            fontSize: '24px',
+            color: '#FFFFFF',
+            align: 'center',
             padding: {
                 top: 5,
                 bottom: 5,
@@ -204,12 +203,13 @@ class Play extends Phaser.Scene {
             fixedWidth: 0
         }
 
-        // TEMP: create fuel display
-        this.displayFuel = this.add.text(450, 50, this.player.getFuel(), menuConfig);
-        // TEMP: create health display
-        this.displayHealth = this.add.text(90, 120, this.player.getHealth(), menuConfig);
-        // TEMP: create level descent tracker
-        this.displayLevel = this.add.text(75, 550, Math.floor(this.level), menuConfig);
+        // create fuel display
+        this.fuelOutline = this.add.image(485, 40, 'FuelBarOutline');
+        this.fuelGauge = this.add.image(485, 40, 'FuelGauge');
+        this.displayFuel = this.add.text(460, 25, this.player.getFuel(), playConfig);
+        // create level descent tracker
+        playConfig.fontSize = '28px';
+        this.displayLevel = this.add.text(60, 540, Math.floor(100000 - this.level), playConfig);
     }
 
     //========================= UPDATE() ======================================
@@ -255,8 +255,7 @@ class Play extends Phaser.Scene {
         // UI Updates ---------------------------------------------------------
         // update displays
         this.displayFuel.text = this.player.getFuel();
-        this.displayHealth.text = this.player.getHealth();
-        this.displayLevel.text = Math.floor(this.level);
+        this.displayLevel.text = Math.floor(100000 - this.level);
 
         // Environment Updates ------------------------------------------------
         // move environment with movement
@@ -456,10 +455,9 @@ class Play extends Phaser.Scene {
 
     // stageCompletion()
     // starts new scene when triggered
-    stageCompletion(){
+    stageCompletion() {
         this.trackOneBGM.mute = true;
         globalLevel = this.level + 13;
-        this.scene.pause('Play');
         this.scene.start('stageCompleteScene');
     }
 }

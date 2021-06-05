@@ -10,6 +10,8 @@ class GameOver extends Phaser.Scene {
         this.load.image('gameOverLettering', './assets/GameOver/GameOverLettering.png');
         this.load.image('menuButton', './assets/GameOver/Menu.png');
         this.load.image('playAgainButton', './assets/GameOver/PlayAgain.png');
+        this.load.image('heart', './assets/HUD_UI/BlueHeart.png');
+        this.load.image('Goop4', './assets/Level_2/Goop4.png');
 
         this.load.audio('gameOver', './assets/Sounds/gameOver.mp3');
     }
@@ -37,6 +39,7 @@ class GameOver extends Phaser.Scene {
             fixedWidth: 0
         }
 
+        //assets
         this.gradient_bg = this.add.tileSprite(0, 0, 960, 640, 'gradient').setOrigin(0, 0);
         this.starfield = this.add.tileSprite(0, 0, 960, 640, 'space').setOrigin(0, 0);
 
@@ -46,20 +49,56 @@ class GameOver extends Phaser.Scene {
         this.menuButton = this.add.tileSprite(675, 400, 110, 50, 'menuButton').setOrigin(0, 0);
         this.playAgainButton = this.add.tileSprite(200, 400, 110, 50, 'playAgainButton').setOrigin(0, 0);
 
-        // temp: define keys
-        keyP = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.P);
-        keyM = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.M);
+        this.heart = this.add.image(400, 600, 'heart').setScale(.8);
+        this.heart.setVisible(false);
+
+        this.goop = this.add.image(400,600, 'Goop4').setScale(.5);
+        
+
+        //menu buttons
+        this.menuButton.setInteractive();
+        this.playAgainButton.setInteractive();
+
+        this.menuButton.on("pointerover", ()=> {
+            this.goop.setVisible(true);
+            this.goop.x = this.menuButton.x + 130
+            this.goop.y = this.menuButton.y + 30;
+        })
+
+        this.menuButton.on("pointerout", ()=> {
+            this.goop.setVisible(false);
+        })
+
+        this.menuButton.on("pointerup", () => {
+            this.playMenuScene();
+    })
+
+    this.playAgainButton.on("pointerover", ()=> {
+        this.heart.setVisible(true);
+        this.heart.x = this.playAgainButton.x - 30
+        this.heart.y = this.playAgainButton.y + 30;
+    })
+
+    this.playAgainButton.on("pointerout", ()=> {
+        this.heart.setVisible(false);
+    })
+
+    this.playAgainButton.on("pointerup", () => {
+        this.playGameScene();
+})
     }
 
     update() {
-        if (Phaser.Input.Keyboard.JustDown(keyP)) {
-            this.GameOverSong.mute = true;
-            this.scene.start('playScene');
-        }
-        if (Phaser.Input.Keyboard.JustDown(keyM)) {
-            this.GameOverSong.mute = true;
-            this.scene.start('menuScene');
-        }
+
         this.starfield.tilePositionY += 1;
+    }
+
+    playGameScene(){
+        this.GameOverSong.mute = true;
+        this.scene.start('playScene');
+    }
+    playMenuScene(){
+        this.GameOverSong.mute = true;
+        this.scene.start('menuScene');
     }
 }

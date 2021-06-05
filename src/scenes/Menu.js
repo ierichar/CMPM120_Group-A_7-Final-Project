@@ -63,9 +63,6 @@ class Menu extends Phaser.Scene {
 
         //this.playButton = game.add.button( 400, 400, 'Play', this.playGameScene, this);
 
-        // define keys
-        keyP = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.P);
-
         
         this.play.setInteractive();
         this.credits.setInteractive();

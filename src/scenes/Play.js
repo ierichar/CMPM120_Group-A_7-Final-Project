@@ -447,25 +447,28 @@ class Play extends Phaser.Scene {
     // addHazard()
     // randomly spawn hazards
     addHazard() {
-        let rand_obj = Phaser.Math.Between(0, 3);
+        let rand_obj = Phaser.Math.Between(0, 1);
         let rand_x_pos = Phaser.Math.Between(elevatorLeft + 100, elevatorRight - 100);
         let rand_velocity = Phaser.Math.Between(200, 400);
-        // let rand_rotation = Phaser.Math.Between(-100, 100);
+        let rand_rotation = Phaser.Math.Between(-100, 100);
         if (this.level > stage1Start && this.level < stage3Start) {
             switch (rand_obj) {
                 case 0:
-                    let drill = new Hazard(this, rand_x_pos, 0, 'drill', 0).setScale(0.35);
+                    let drill = new Hazard(this, rand_x_pos, 0, 'drill', 0).setScale(0.35).setOrigin(.5,.5);
                     drill.setVelocityY(rand_velocity);
-                    // drill.body.setAngularVelocity(rand_rotation);
-                    // drill.body.setCircle(drill.height/3);
+                    drill.body.setAngularVelocity(rand_rotation);
+                    drill.body.setCircle(drill.height/3);
+                    drill.body.setCircle(100, 5, 5);
                     this.hazardGroup.add(drill);
                     break;
                 case 1:
                     let wrench = new Hazard(this, rand_x_pos, 0, 'wrench', 0).setScale(0.35);
                     wrench.setVelocityY(rand_velocity);
-                    // wrench.body.setAngularVelocity(rand_rotation);
-                    // wrench.body.setCircle(wrench.width/3);
+                    wrench.body.setAngularVelocity(rand_rotation);
+                    wrench.body.setCircle(wrench.width/3);
+                    wrench.body.setCircle(wrench.width/2,0 - 10, -wrench.height-2);
                     this.hazardGroup.add(wrench);
+                    
                     break;
                 case 2:
                     let hbeam = new Hazard(this, rand_x_pos, 0, 'H_Beam', 0).setScale(0.35);

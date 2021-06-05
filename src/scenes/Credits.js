@@ -8,6 +8,7 @@ class Credits extends Phaser.Scene {
         this.load.image('gradient', './assets/SmallBackground.png');
         this.load.image('stars_expanded', './assets/Menu/Stars_Expanded.png');
         this.load.image('creditsLettering', './assets/CreditsLettering.png');
+        this.load.image('AstronautHead', './assets/HUD_UI/AstronautHead.png');
 
         this.load.image('menuButton', './assets/GameOver/Menu.png');
 
@@ -22,15 +23,32 @@ class Credits extends Phaser.Scene {
 
         this.menuButton = this.add.tileSprite(420, 525, 110, 50, 'menuButton').setOrigin(0, 0);
 
-        // temp: define key
-        keyM = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.M);
+        this.astronaut = this.add.image(400, 600, 'AstronautHead').setScale(.8);
+        this.astronaut.setVisible(false);
+
+        this.menuButton.setInteractive();
+
+        this.menuButton.on("pointerover", ()=> {
+            this.astronaut.setVisible(true);
+            this.astronaut.x = this.menuButton.x - 50
+            this.astronaut.y = this.menuButton.y + 25;
+        })
+
+        this.menuButton.on("pointerout", ()=> {
+            this.astronaut.setVisible(false);
+        })
+
+        this.menuButton.on("pointerup", () => {
+            this.playMenuScene();
+    })
+
     }
 
     update() {
         this.starfield.rotation += 0.003
 
-        if (Phaser.Input.Keyboard.JustDown(keyM)) {
-            this.scene.start('menuScene');
-        }
+    }
+    playMenuScene(){
+        this.scene.start('menuScene');
     }
 }

@@ -16,13 +16,12 @@ class Credits extends Phaser.Scene {
 
     create() {
         // add background and buttons
-        this.creditsLettering = this.add.image(120, 100, 'creditsLettering').setOrigin(0, 0);
-        this.border_Screen= this.add.image(120, 100, 'borderScreen').setOrigin(0, 0);
         this.gradient = this.add.tileSprite(0, 0, 960, 640, 'gradient').setOrigin(0, 0);
         this.starfield = this.add.tileSprite(game.config.width/2, 520, 960, 480, 'stars_expanded').setScale(2);
+        this.borderScr = this.add.tileSprite(0, 0, 960, 640, 'borderScreen').setOrigin(0, 0);
         this.creditsLettering = this.add.image(120, 100, 'creditsLettering').setOrigin(0, 0);
 
-        this.menuButton = this.add.tileSprite(420, 525, 110, 50, 'menuButton').setOrigin(0, 0);
+        this.menuButton = this.add.tileSprite(710, 525, 110, 50, 'menuButton').setOrigin(0, 0);
 
         this.astronaut = this.add.image(400, 600, 'AstronautHead').setScale(.8);
         this.astronaut.setVisible(false);

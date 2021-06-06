@@ -16,7 +16,7 @@ class Play extends Phaser.Scene {
         // UI
         this.load.image('TopBar', './assets/HUD_UI/TopBar.png');
         this.load.image('LeftPanel', './assets/HUD_UI/LeftPanel.png');
-        this.load.image('RightPanel', './assets/HUD_UI/RightPanel.png');
+        this.load.image('RightPanel', './assets/HUD_UI/LeftPanelEmpty.png');
         this.load.image('LeftBottomPanel', './assets/HUD_UI/LeftBottomPanel.png');
         this.load.image('RightBottomPanel', './assets/HUD_UI/RightBottomPanel.png');
         this.load.image('FuelBarOutline', './assets/HUD_UI/FuelBarOutline.png');
@@ -28,6 +28,8 @@ class Play extends Phaser.Scene {
         this.load.image('stage1text', './assets/HUD_UI/Stage1_Text.png');
         this.load.image('stage2text', './assets/HUD_UI/Stage2_Text.png');
         this.load.image('stage3text', './assets/HUD_UI/Stage3_Text.png');
+        this.load.image('Transmission_Text', './assets/HUD_UI/TransmissionText.png');
+        this.load.image('TextBox', './assets/HUD_UI/TextBox.png');
 
         // game objects
         this.load.image('Astronaut', './assets/GeneralAssets/SmallAstronaut.png');
@@ -61,6 +63,9 @@ class Play extends Phaser.Scene {
         this.load.image('monster', './assets/Level_3/Monster.png');
         this.load.image('Goop19', './assets/Level_3/Goop19.png');
 
+        //textbox animation
+        this.load.atlas('TextBoxAtlas', './assets/TextBox_Anims.png', './assets/TextBox_Anims.json', Phaser.Loader.TEXTURE_ATLAS_JSON_HASH);
+
         // audio
         this.load.audio('trackOne', './assets/Sounds/trackOne.mp3');
         this.load.audio('trackTwo', './assets/Sounds/final-game-level-2-audio.mp3');
@@ -86,6 +91,17 @@ class Play extends Phaser.Scene {
             },
             fixedWidth: 0
         }
+
+         //slug push config
+        this.anims.create({
+            key:'Text_Box', //key
+            // repeat: -1,
+            frames: this.anims.generateFrameNames('TextBoxAtlas', { //ref atlas name
+                end: 24,
+                start: 1
+            }),
+            framerate: 5
+        })
 
         // Predetermined level milestones -------------------------------------
         // create stage level tracker
@@ -317,10 +333,20 @@ class Play extends Phaser.Scene {
         playConfig.color = '#000000';
         this.winPrompt = this.add.text(game.config.width/2 + 20, game.config.height/2 + borderUISize*3, '(SPACEBAR)', playConfig).setOrigin(0.5).setAlpha(0);
 
+        this.ActiveTransmission = true; 
+
+        if (this.ActiveTransmission == true) {
+            this.TransmissionText = this.add.image(850, 70, 'Transmission_Text');
+
+            this.Text_Box = this.add.sprite(853, 240, 'TextBox', 0);
+            this.Text_Box.anims.play('Text_Box');
+        }
+
     }
 
     //========================= UPDATE() ======================================
     update() {
+        this.Text_Box.setDisplaySize(207, 250);
         // Game State Updates -------------------------------------------------
         if (this.gameOver == true) {
             this.trackOneBGM.stop();

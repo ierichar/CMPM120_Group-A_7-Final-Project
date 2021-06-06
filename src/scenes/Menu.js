@@ -28,20 +28,8 @@ class Menu extends Phaser.Scene {
             loop: true
         });
         this.menuAudio.play();
-
-        let menuConfig = {
-            fontFamily: 'Courier',
-            fontSize: '28px',
-            backgroundColor: '#F3B141',
-            color: '#843605',
-            align: 'right',
-            padding: {
-                top: 5,
-                bottom: 5,
-            },
-            fixedWidth: 0
-        }
-
+        
+        // load background and buttons
         var button;
         this.gradient_bg = this.add.tileSprite(0, 0, 960, 640, 'gradient').setOrigin(0, 0);
         
@@ -56,8 +44,8 @@ class Menu extends Phaser.Scene {
 
         this.title = this.add.tileSprite(85, 150, 807, 79, 'Title').setOrigin(0, 0);
         this.play = this.add.tileSprite(420, 280, 142, 65, 'Play').setOrigin(0, 0);
-        this.howToplay = this.add.tileSprite(300, 420, 388, 65, 'HowToPlay').setOrigin(0, 0);
-        this.credits = this.add.tileSprite(370, 350, 248, 65, 'Credits').setOrigin(0, 0);
+        this.howToplay = this.add.tileSprite(300, 350, 388, 65, 'HowToPlay').setOrigin(0, 0);
+        this.credits = this.add.tileSprite(370, 420, 248, 65, 'Credits').setOrigin(0, 0);
         
         //this.starfield = this.add.tileSprite(0, 0, 960, 640, 'space').setOrigin(0, 0);
 
@@ -68,7 +56,7 @@ class Menu extends Phaser.Scene {
         this.credits.setInteractive();
         this.howToplay.setInteractive();
 
-
+        // play click events
         this.play.on("pointerover", ()=> {
             this.astronaut.setVisible(true);
             this.astronaut.x = this.play.x - 30
@@ -80,10 +68,26 @@ class Menu extends Phaser.Scene {
         })
 
         this.play.on("pointerup", () => {
-                this.playGameScene();
+            this.playGameScene();
         })
 
-        //credits click events
+        
+        // how to play events
+        this.howToplay.on("pointerover", ()=> {
+            this.astronaut.setVisible(true);
+            this.astronaut.x = this.howToplay.x - 30
+            this.astronaut.y = this.howToplay.y + 30;
+        })
+
+        this.howToplay.on("pointerout", ()=> {
+            this.astronaut.setVisible(false);
+        })
+
+        this.howToplay.on("pointerup", () => {
+            this.howToGameScene();
+        })
+
+        // credits click events
         this.credits.on("pointerover", ()=> {
             this.astronaut.setVisible(true);
             this.astronaut.x = this.credits.x - 30;
@@ -98,36 +102,26 @@ class Menu extends Phaser.Scene {
             this.creditsGameScene();
         })
 
-         //how to play events
-         this.howToplay.on("pointerover", ()=> {
-             this.astronaut.setVisible(true);
-             this.astronaut.x = this.howToplay.x - 30
-             this.astronaut.y = this.howToplay.y + 30;
-         })
-
-         this.howToplay.on("pointerout", ()=> {
-             this.astronaut.setVisible(false);
-         })
-
-         this.howToplay.on("pointerup", () => {
-                 this.howToPlayGameScene();
-         })
-
     }
 
     update() {
 
-        //this.starfield.tilePositionY += 1;
+        // this.starfield.tilePositionY += 1;
         this.earth.rotation += 0.003
         this.mini_e.rotation += 0.003
         this.stars_e.rotation += 0.003
 
     }
 
-    playGameScene(){
+    playGameScene() {
         this.menuAudio.mute = true;
         globalLevel = 1;
         this.scene.start('playScene');
+    }
+
+    howToGameScene() {
+        this.menuAudio.mute = true;
+        this.scene.start('howToPlayScene');
     }
 
     creditsGameScene() {

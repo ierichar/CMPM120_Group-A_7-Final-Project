@@ -90,8 +90,6 @@ class Play extends Phaser.Scene {
         // Predetermined level milestones -------------------------------------
         // create stage level tracker
         this.level = globalLevel;
-        
-        this.level = stage3Start;
 
         //this.physics.world.gravity.y = 20;
 

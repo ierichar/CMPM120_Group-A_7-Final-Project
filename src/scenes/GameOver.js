@@ -86,29 +86,38 @@ class GameOver extends Phaser.Scene {
             this.playMenuScene();
     })
 
-    this.playAgainButton.on("pointerover", ()=> {
-        this.heart.setVisible(true);
-        this.heart.x = this.playAgainButton.x - 30
-        this.heart.y = this.playAgainButton.y + 30;
-    })
+        this.playAgainButton.on("pointerover", ()=> {
+            this.heart.setVisible(true);
+            this.heart.x = this.playAgainButton.x - 30
+            this.heart.y = this.playAgainButton.y + 30;
+        })
 
-    this.playAgainButton.on("pointerout", ()=> {
-        this.heart.setVisible(false);
-    })
+        this.playAgainButton.on("pointerout", ()=> {
+            this.heart.setVisible(false);
+        })
 
-    this.playAgainButton.on("pointerup", () => {
-        this.playGameScene();
-})
+        this.playAgainButton.on("pointerup", () => {
+            this.playGameScene();
+        })
     }
 
     update() {
 
         this.starfield.tilePositionY += 1;
+
     }
 
     playGameScene(){
         this.GameOverSong.mute = true;
         this.GameOverMetal.mute = true;
+        // // update globalLevel to start at previous in play
+        // if (globalLevel >= stage0Start && globalLevel <= stage0End) {
+        //     globalLevel = stage1Start;
+        // } else if (globalLevel >= stage1Start && globalLevel <= stage1End) {
+        //     globalLevel = stage2Start;
+        // } else if (globalLevel >= stage2Start && globalLevel <= stage2End) {
+        //     globalLevel = stage3Start;
+        // }
         this.scene.start('playScene');
     }
     playMenuScene(){

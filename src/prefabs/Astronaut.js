@@ -69,7 +69,6 @@ class Astronaut extends Phaser.Physics.Arcade.Sprite {
     }
 
     toggleInvincible() {
-        console.log('toggleInvincible() called');
         this.invincible = !(this.invincible);
     }
 }

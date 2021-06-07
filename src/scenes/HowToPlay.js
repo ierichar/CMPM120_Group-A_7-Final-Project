@@ -7,7 +7,7 @@ class HowToPlay extends Phaser.Scene {
         this.load.image('borderScreen', './assets/GameOver/GameOverBorder.png');
         this.load.image('gradient', './assets/SmallBackground.png');
         this.load.image('stars_expanded', './assets/Menu/Stars_Expanded.png');
-        this.load.image('tutorialLettering', './assets/HowToPlay.png');
+        this.load.image('tutorialLettering', './assets/HowToPlayLettering.png');
         this.load.image('AstronautHead', './assets/HUD_UI/AstronautHead.png');
 
         this.load.image('menuButton', './assets/GameOver/Menu.png');

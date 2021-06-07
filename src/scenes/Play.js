@@ -85,7 +85,7 @@ class Play extends Phaser.Scene {
         this.load.audio('clang', './assets/Sounds/clang.mp3');
         this.load.audio('pickupNoise', './assets/Sounds/pickupNoise.mp3');
         this.load.audio('tutorialSong', './assets/Sounds/final-game-tutorial-audio.mp3');
-        this.load.audio('finalBoss', './assets/Sounds/finalBoss.mp3');
+        this.load.audio('finalBoss', './assets/Sounds/finalboss.mp3');
     }
 
     //========================= CREATE() ======================================

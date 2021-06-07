@@ -8,7 +8,7 @@ class Menu extends Phaser.Scene {
         this.load.image('Menu', './assets/Menu/Menu_Panel.png');
         this.load.image('Title', './assets/Menu/Title.png');
         this.load.image('Play', './assets/Menu/Play.png');
-        this.load.image('HowToPlay', './assets/Menu/HowToPlay.png');
+        this.load.image('howToPlay', './assets/Menu/HowToPlay.png');
         this.load.image('Credits', './assets/Menu/Credits.png');
         this.load.image('earth', './assets/Menu/Earth.png');
         this.load.image('miniElevator', './assets/Menu/MiniElevator.png');
@@ -43,7 +43,7 @@ class Menu extends Phaser.Scene {
 
         this.title = this.add.tileSprite(65, 150, 807, 79, 'Title').setOrigin(0, 0);
         this.play = this.add.tileSprite(410, 280, 142, 65, 'Play').setOrigin(0, 0);
-        this.howToplay = this.add.tileSprite(300, 350, 388, 65, 'HowToPlay').setOrigin(0, 0);
+        this.howToplay = this.add.tileSprite(300, 350, 388, 65, 'howToPlay').setOrigin(0, 0);
         this.credits = this.add.tileSprite(360, 420, 248, 65, 'Credits').setOrigin(0, 0);
         // clickable sprites
         this.play.setInteractive();

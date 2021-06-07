@@ -1,12 +1,10 @@
 /***
  * Group A_7 Ace Heaven - Final Project
- * Authors: Ilda Lara Aguilar, Jackson Bazeal, Ian Richardson
+ * Authors: Ilda Lara Aguilar, Jackson Brazeal, Ian Richardson
  * CMPM 120/ARTG 120
- * Started: May 11th, 2021
- * 
+ * Started:     May 11th, 2021
+ * Completed:   June 7th, 2021 
  */
-
-//Jacksons swag comment
 
 let config = {
     type: Phaser.CANVAS,

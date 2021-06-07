@@ -23,13 +23,13 @@ class StageComplete extends Phaser.Scene {
         }
 
 
-        if(globalLevel < stage3End){
-        this.add.text(game.config.width/2, game.config.height/2 + borderUISize, 'STAGE' + (dialogueCounter) + 'COMPLETE', menuConfig).setOrigin(0.5);
-        this.add.text(game.config.width/2 + 20, game.config.height/2 + borderUISize*2.5, '(SPACEBAR)', menuConfig).setOrigin(0.5);
+        if (globalLevel < stage3End) {
+            this.add.text(game.config.width/2, game.config.height/2 + borderUISize, 'STAGE ' + (dialogueCounter - 1) + ' COMPLETE', menuConfig).setOrigin(0.5);
+            this.add.text(game.config.width/2 + 20, game.config.height/2 + borderUISize*2.5, '(SPACEBAR)', menuConfig).setOrigin(0.5);
 
-        keySpace = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
+            keySpace = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
         }
-        else{
+        else {
             this.victoryScreen= this.add.image(0, 0, 'victory').setOrigin(0, 0);
             this.menuButton = this.add.tileSprite(430, 525, 110, 50, 'menuButton').setOrigin(0, 0);
             this.astronaut = this.add.image(400, 600, 'AstronautHead').setScale(.8);
@@ -38,17 +38,17 @@ class StageComplete extends Phaser.Scene {
             this.menuButton.setInteractive();
 
             // menu click events
-        this.menuButton.on("pointerover", ()=> {
-            this.astronaut.setVisible(true);
-            this.astronaut.x = this.menuButton.x - 50
-            this.astronaut.y = this.menuButton.y + 25;
-        })
-        this.menuButton.on("pointerout", ()=> {
-            this.astronaut.setVisible(false);
-        })
-        this.menuButton.on("pointerup", () => {
-            this.playMenuScene();
-        })
+            this.menuButton.on("pointerover", ()=> {
+                this.astronaut.setVisible(true);
+                this.astronaut.x = this.menuButton.x - 50
+                this.astronaut.y = this.menuButton.y + 25;
+            })
+            this.menuButton.on("pointerout", ()=> {
+                this.astronaut.setVisible(false);
+            })
+            this.menuButton.on("pointerup", () => {
+                this.playMenuScene();
+            })
         }
 
     }
@@ -61,6 +61,7 @@ class StageComplete extends Phaser.Scene {
     }
     }
     playMenuScene(){
+        dialogueCounter = 0;
         this.scene.start('menuScene');
     }
 }

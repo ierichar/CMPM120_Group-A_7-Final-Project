@@ -133,7 +133,7 @@ class Play extends Phaser.Scene {
         //load the audio
         this.trackOneBGM = this.sound.add('trackOne', { 
             mute: false,
-            volume: .50,
+            volume: .15,
             rate: 1,
             loop: true 
         });
@@ -145,19 +145,19 @@ class Play extends Phaser.Scene {
         });
         this.trackThreeBGM = this.sound.add('trackThree', { 
             mute: false,
-            volume: .85,
+            volume: .15,
             rate: 1,
             loop: true 
         });
         this.trackTutorial = this.sound.add('tutorialSong', { 
             mute: false,
-            volume: .85,
+            volume: .15,
             rate: 1,
             loop: true 
         });
         this.finalBoss = this.sound.add('finalBoss', { 
             mute: false,
-            volume: .65,
+            volume: .15,
             rate: 1,
             loop: true 
         });
@@ -177,25 +177,25 @@ class Play extends Phaser.Scene {
 
         this.slapAudio = this.sound.add('slap', { 
             mute: false,
-            volume: 1,
+            volume: .5,
             rate: 1,
             loop: false
         });
         this.clang = this.sound.add('clang', {
             mute:false,
-            volume: .8,
+            volume: .25,
             rate: 1,
             loop:false
         })
         this.pickupAudio = this.sound.add('pickupNoise', { 
             mute: false,
-            volume: .8,
+            volume: .5,
             rate: 1,
             loop: false
         });
         this.jetpackAudio = this.sound.add('jetpack', { 
             mute: false,
-            volume: .3,
+            volume: .05,
             rate: .3,
             loop: false
         });
@@ -309,7 +309,7 @@ class Play extends Phaser.Scene {
 
         // stage 1 hazard timer
         this.hazardTimer = this.time.addEvent({
-            delay: 4000,
+            delay: 2000,
             callback: this.addHazard,
             callbackScope: this,
             loop: true
@@ -324,7 +324,7 @@ class Play extends Phaser.Scene {
         });
         // stage 3 projectile timer
         this.projectileTimer = this.time.addEvent({
-            delay: 5000,
+            delay: 2500,
             callback: this.addProjectile,
             callbackScope: this,
             loop: true
@@ -350,12 +350,12 @@ class Play extends Phaser.Scene {
         this.astrohead = this.add.image(40, 65, 'astrohead');
 
         // create fuel display
-        this.fuelOutline = this.add.image(485, 40, 'FuelBarOutline');
-        this.fuelGauge = this.add.image(485, 40, 'FuelGauge');
+        this.fuelOutline = this.add.image(484, 40, 'FuelBarOutline');
+        this.fuelGauge = this.add.image(484, 40, 'FuelGauge');
         this.displayFuel = this.add.text(550, 42, this.player.getFuel(), playConfig).setOrigin(0.5);
         // create level descent tracker
         playConfig.fontSize = '28px';
-        this.displayLevel = this.add.text(60, 540, Math.floor(200000 - this.level*100), playConfig);
+        this.displayLevel = this.add.text(60, 540, Math.floor(230005 - this.level*100), playConfig);
         // create stage display
         this.stage1Display = this.add.image(858, 570, 'stage1text').setAlpha(0);
         this.stage2Display = this.add.image(858, 570, 'stage2text').setAlpha(0);
@@ -485,7 +485,7 @@ class Play extends Phaser.Scene {
         // UI Updates ---------------------------------------------------------
         // update displays
         this.displayFuel.text = this.player.getFuel();
-        this.displayLevel.text = Math.floor(15000 - this.level*100);
+        this.displayLevel.text = Math.floor(18005 - this.level*100);
         // update dialogue
         if (globalLevel < stage0End) {
             this.dialogueText = this.dialogueArr[0];
@@ -509,7 +509,7 @@ class Play extends Phaser.Scene {
             this.elevator.tilePositionY += 1.3;
             this.elevator2.tilePositionY += 1.3;
             this.elevator3.tilePositionY += 1.3;
-            this.UI_LevelTrack.y += 1/200;
+            this.UI_LevelTrack.y += 1/25;
             
             if (keyW.isDown && this.player.getFuel() > 0) {
                 // update background

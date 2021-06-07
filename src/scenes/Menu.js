@@ -23,7 +23,7 @@ class Menu extends Phaser.Scene {
         // play audio        
         this.menuAudio = this.sound.add('menuMusic', { 
             mute: false,
-            volume: .75,
+            volume: .25,
             rate: 1.1,
             loop: true
         });
@@ -33,18 +33,18 @@ class Menu extends Phaser.Scene {
         this.gradient_bg = this.add.tileSprite(0, 0, 960, 640, 'gradient').setOrigin(0, 0);
         
         this.stars_e = this.add.image(game.config.width/2, 520, 'stars_expanded');
-        this.mini_e = this.add.image(500, 850, 'miniElevator');
-        this.earth = this.add.image(500, 850, 'earth');
+        this.mini_e = this.add.image(game.config.width/2, 850, 'miniElevator');
+        this.earth = this.add.image(game.config.width/2, 850, 'earth');
         this.mini_e.setOrigin(2, 0.5);
         this.astronaut = this.add.image(400, 600, 'Astronaut').setScale(.3);
         this.astronaut.setVisible(false);
 
-        this.menu = this.add.tileSprite(0, 0, 960, 640, 'Menu').setOrigin(0, 0);
+        this.menu = this.add.tileSprite(-20, 0, 975, 640, 'Menu').setOrigin(0, 0);
 
-        this.title = this.add.tileSprite(85, 150, 807, 79, 'Title').setOrigin(0, 0);
-        this.play = this.add.tileSprite(420, 280, 142, 65, 'Play').setOrigin(0, 0);
+        this.title = this.add.tileSprite(65, 150, 807, 79, 'Title').setOrigin(0, 0);
+        this.play = this.add.tileSprite(410, 280, 142, 65, 'Play').setOrigin(0, 0);
         this.howToplay = this.add.tileSprite(300, 350, 388, 65, 'HowToPlay').setOrigin(0, 0);
-        this.credits = this.add.tileSprite(370, 420, 248, 65, 'Credits').setOrigin(0, 0);
+        this.credits = this.add.tileSprite(360, 420, 248, 65, 'Credits').setOrigin(0, 0);
         // clickable sprites
         this.play.setInteractive();
         this.credits.setInteractive();

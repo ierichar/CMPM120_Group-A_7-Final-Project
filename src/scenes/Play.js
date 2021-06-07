@@ -309,7 +309,7 @@ class Play extends Phaser.Scene {
 
         // stage 1 hazard timer
         this.hazardTimer = this.time.addEvent({
-            delay: 2000,
+            delay: 3000,
             callback: this.addHazard,
             callbackScope: this,
             loop: true
@@ -342,6 +342,7 @@ class Play extends Phaser.Scene {
         this.UI_LeftBottomPanel = this.add.image(115, 580, 'LeftBottomPanel');
         this.UI_RightBottomPanel = this.add.image(850, 580, 'RightBottomPanel');
         this.UI_Elevator = this.add.image(102, 325, 'elevatorUI');
+        // starts at 203 -> 500
         this.UI_LevelTrack = this.add.image(100, (203 + this.level), 'levelTracker');
         // create hearts and astrohead
         this.heart1 = this.add.image(120, 82, 'heart');
@@ -509,7 +510,8 @@ class Play extends Phaser.Scene {
             this.elevator.tilePositionY += 1.3;
             this.elevator2.tilePositionY += 1.3;
             this.elevator3.tilePositionY += 1.3;
-            this.UI_LevelTrack.y += 1/25;
+            // we did the math!
+            this.UI_LevelTrack.y += (365/10000);
             
             if (keyW.isDown && this.player.getFuel() > 0) {
                 // update background
@@ -748,6 +750,10 @@ class Play extends Phaser.Scene {
         if (this.level > stage2Start && this.level < stage3Start) {
             // hazard randomizer for level 2
             let rand_obj = Phaser.Math.Between(0, 3);
+            // balance for stage 2
+            if (rand_velocity > 300) {
+                rand_velocity -= 100;
+            }
             switch (rand_obj) {
                 case 0:
                     let drill = new Hazard(this, rand_x_pos, 0, 'drill', 0).setScale(.5).setOrigin(.5,.5);

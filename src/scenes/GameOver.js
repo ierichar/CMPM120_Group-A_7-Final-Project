@@ -21,14 +21,14 @@ class GameOver extends Phaser.Scene {
         // add game over audio
         this.GameOverSong = this.sound.add('gameOver', { 
             mute: false,
-            volume: .55,
+            volume: .25,
             rate: 1,
             loop: false 
         });
 
         this.GameOverMetal = this.sound.add('gameOverMetal', { 
             mute: false,
-            volume: .75,
+            volume: .25,
             rate: 1,
             loop: false 
         });

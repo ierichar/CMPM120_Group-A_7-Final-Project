@@ -57,7 +57,8 @@ class GameOver extends Phaser.Scene {
 
         this.gameOverB = this.add.image(0, 0, 'gameOverBorder').setOrigin(0, 0);
         this.gameOverL = this.add.image(140, 100, 'gameOverLettering').setOrigin(0, 0);
-        this.distanceTrack = this.add.text(580, 205,  Math.floor(globalLevel), gameOverConfig);
+        this.distanceTrack = this.add.text(580, 205,  Math.floor(globalLevel*100), gameOverConfig);
+        this.distanceUnit = this.add.text(680, 205, 'm', gameOverConfig);
         if (globalLevel < stage2Start) {
             this.stageTrack = this.add.text(560, 275, 'OBSERVATION DECK', gameOverConfig);
         } else if (globalLevel < stage3Start) {
@@ -90,6 +91,8 @@ class GameOver extends Phaser.Scene {
         })
 
         this.menuButton.on("pointerup", () => {
+            globalLevel = 0;
+            dialogueCounter = 0;
             this.playMenuScene();
     })
 
@@ -104,6 +107,7 @@ class GameOver extends Phaser.Scene {
         })
 
         this.playAgainButton.on("pointerup", () => {
+            dialogueCounter--;
             this.playGameScene();
         })
     }

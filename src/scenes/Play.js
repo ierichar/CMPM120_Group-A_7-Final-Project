@@ -333,8 +333,8 @@ class Play extends Phaser.Scene {
         this.UI_RightPanel = this.add.image(850, 70, 'RightPanel');
         this.UI_LeftBottomPanel = this.add.image(115, 580, 'LeftBottomPanel');
         this.UI_RightBottomPanel = this.add.image(850, 580, 'RightBottomPanel');
-        this.UI_Elevator = this.add.image(100, 325, 'elevatorUI');
-        this.UI_LevelTrack = this.add.image(98, (203 + this.level), 'levelTracker');
+        this.UI_Elevator = this.add.image(102, 325, 'elevatorUI');
+        this.UI_LevelTrack = this.add.image(100, (203 + this.level), 'levelTracker');
         // create hearts and astrohead
         this.heart1 = this.add.image(120, 82, 'heart');
         this.heart2 = this.add.image(160, 85, 'heart');
@@ -347,7 +347,7 @@ class Play extends Phaser.Scene {
         this.displayFuel = this.add.text(550, 42, this.player.getFuel(), playConfig).setOrigin(0.5);
         // create level descent tracker
         playConfig.fontSize = '28px';
-        this.displayLevel = this.add.text(60, 540, Math.floor(100000 - this.level*100), playConfig);
+        this.displayLevel = this.add.text(60, 540, Math.floor(200000 - this.level*100), playConfig);
         // create stage display
         this.stage1Display = this.add.image(858, 570, 'stage1text').setAlpha(0);
         this.stage2Display = this.add.image(858, 570, 'stage2text').setAlpha(0);
@@ -471,17 +471,18 @@ class Play extends Phaser.Scene {
         // UI Updates ---------------------------------------------------------
         // update displays
         this.displayFuel.text = this.player.getFuel();
-        this.displayLevel.text = Math.floor(10000 - this.level*100);
-        this.UI_LevelTrack.y += this.level/1500;
+        this.displayLevel.text = Math.floor(15000 - this.level*100);
 
-        if (globalLevel < stage1Start) {
+        if (globalLevel < stage0End) {
             this.dialogueText = this.dialogueArr[0];
-        } else if (globalLevel < stage2Start) {
+        } else if (globalLevel < stage1End) {
             this.dialogueText = this.dialogueArr[1];
-        } else if (globalLevel < stage3Start) {
+        } else if (globalLevel < stage2End) {
             this.dialogueText = this.dialogueArr[2];
-        } else {
+        } else if (globalLevel < stage2End) {
             this.dialogueText = this.dialogueArr[3];
+        } else {
+            this.dialogueText = this.dialogueArr[0];
         }
 
         // Environment Updates ------------------------------------------------
@@ -494,6 +495,7 @@ class Play extends Phaser.Scene {
             this.elevator.tilePositionY += 1.3;
             this.elevator2.tilePositionY += 1.3;
             this.elevator3.tilePositionY += 1.3;
+            this.UI_LevelTrack.y += 1/200;
             
             if (keyW.isDown && this.player.getFuel() > 0) {
                 // update background

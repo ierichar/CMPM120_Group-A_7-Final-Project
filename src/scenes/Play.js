@@ -411,8 +411,8 @@ class Play extends Phaser.Scene {
         // UI Updates ---------------------------------------------------------
         // update displays
         this.displayFuel.text = this.player.getFuel();
-        this.displayLevel.text = Math.floor(100000 - this.level*100);
-        this.UI_LevelTrack.y += this.level/1000;
+        this.displayLevel.text = Math.floor(10000 - this.level*100);
+        this.UI_LevelTrack.y += this.level/1500;
 
         // Environment Updates ------------------------------------------------
         // move environment with movement
@@ -608,8 +608,9 @@ class Play extends Phaser.Scene {
     // add tutorial objects to scene
     addDummy() {
         if (this.level > stage0Start && this.level < stage0End) {
-            let dummy = new Hazard(this, 480, 0, 'drill', 0).setScale(.8);
+            let dummy = new Hazard(this, 480, 0, 'drill', 0).setScale(.5);
             dummy.setVelocityY(globalGravity/2);
+            dummy.body.setAngularVelocity(50);
             this.dummyGroup.add(dummy);
         }
     }
@@ -627,26 +628,36 @@ class Play extends Phaser.Scene {
                 case 0:
                     let calculator = new Hazard(this, rand_x_pos, 0, 'calculator', 0).setScale(0.5);
                     calculator.setVelocityY(rand_velocity);
+                    calculator.body.setCircle(calculator.height/2);
+                    calculator.setAngularVelocity(rand_rotation);
                     this.hazardGroup.add(calculator);
                     break;
                 case 1:
                     let magnet = new Hazard(this, rand_x_pos, 0, 'magnet', 0).setScale(0.5);
                     magnet.setVelocityY(rand_velocity);
+                    magnet.body.setCircle(magnet.height/2);
+                    magnet.setAngularVelocity(rand_rotation);
                     this.hazardGroup.add(magnet);
                     break;
                 case 2:
                     let microscope = new Hazard(this, rand_x_pos, 0, 'microscope', 0);
                     microscope.setVelocityY(rand_velocity);
+                    microscope.body.setCircle(microscope.height/2);
+                    microscope.setAngularVelocity(rand_rotation);
                     this.hazardGroup.add(microscope);
                     break;
                 case 3:
                     let telescope = new Hazard(this, rand_x_pos, 0, 'telescope', 0);
                     telescope.setVelocityY(rand_velocity);
+                    telescope.body.setCircle(telescope.height/2);
+                    telescope.setAngularVelocity(rand_rotation);
                     this.hazardGroup.add(telescope);
                     break;
                 case 4:
                     let vials = new Hazard(this, rand_x_pos, 0, 'vials', 0).setScale(0.5);
                     vials.setVelocityY(rand_velocity);
+                    vials.body.setCircle(vials.height/2);
+                    vials.setAngularVelocity(rand_rotation);
                     this.hazardGroup.add(vials);
                     break;
             }
@@ -764,14 +775,10 @@ class Play extends Phaser.Scene {
     // addTransition()
     // adds the transition object into the scene
     addTransition() {
-        if (this.level > stage0Start && this.level <= stage0End) {
-            let escapePod = new Transition(this, 480, 850, 'transitionLab', 0).setScale(1,1);
-            this.transitionGroup.add(escapePod);
-        }
         if (this.level > stage1Start && this.level <= stage1End) {
             let escapePod = new Transition(this, 480, 850, 'transitionEngineer', 0).setScale(1,1);
             this.transitionGroup.add(escapePod);
-        } else if (this.level > stage2Start && this.level <= stage2End) {
+        } else {
             let escapePod = new Transition(this, 480, 850, 'transitionLab', 0).setScale(1,1);
             this.transitionGroup.add(escapePod);
         }

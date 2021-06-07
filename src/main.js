@@ -40,13 +40,13 @@ let stage0Start = 0;    // 0
 let stage0End = 10;     // 10
 // Stage 1
 let stage1Start = 20;   // 20
-let stage1End = 30;     // 60
+let stage1End = 60;     // 60
 // Stage 2
-let stage2Start = 40;   // 70
-let stage2End = 50;    // 120
+let stage2Start = 70;   // 70
+let stage2End = 120;    // 120
 // Stage 3
-let stage3Start = 60;  // 130
-let stage3End = 70;    // 180
+let stage3Start = 130;  // 130
+let stage3End = 180;    // 180
 
 const tileSize = 280;
 const globalGravity = 500;

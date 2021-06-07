@@ -11,7 +11,7 @@ class Play extends Phaser.Scene {
         this.load.image('elevator', './assets/Level_1/Level_1.png');
         this.load.image('elevator2', './assets/Level_2/Level_2.png');
         this.load.image('elevator3', './assets/Level_3/Level3_BaseTile.png');
-        this.load.image('elevatorAir', './assets/Level_3/Level3_AirlockTile.png');
+        this.load.image('airlock', './assets/Level_3/Airlock.png');
 
         // UI
         this.load.image('TopBar', './assets/HUD_UI/TopBar.png');
@@ -62,6 +62,15 @@ class Play extends Phaser.Scene {
         this.load.image('Goop7', './assets/Level_2/Goop7.png');
         this.load.image('monster', './assets/Level_3/Monster.png');
         this.load.image('Goop19', './assets/Level_3/Goop19.png');
+        // load projectiles
+        this.load.image('projectile1', './assets/GeneralLevelAssets/Boogie1.png');
+        this.load.image('projectile2', './assets/GeneralLevelAssets/Boogie2.png');
+        this.load.image('projectile3', './assets/GeneralLevelAssets/Boogie3.png');
+        this.load.image('projectile4', './assets/GeneralLevelAssets/Boogie4.png');
+        this.load.image('projectile5', './assets/GeneralLevelAssets/Boogie5.png');
+        this.load.image('projectile6', './assets/GeneralLevelAssets/Boogie6.png');
+        this.load.image('projectile7', './assets/GeneralLevelAssets/Boogie7.png');
+        this.load.image('projectile8', './assets/GeneralLevelAssets/Boogie8.png');
 
         //textbox animation
         this.load.atlas('TextBoxAtlas', './assets/TextBox_Anims.png', './assets/TextBox_Anims.json', Phaser.Loader.TEXTURE_ATLAS_JSON_HASH);
@@ -100,7 +109,7 @@ class Play extends Phaser.Scene {
                 end: 24,
                 start: 1
             }),
-            framerate: 5
+            framerate: 5,
         })
 
         // Predetermined level milestones -------------------------------------
@@ -177,14 +186,26 @@ class Play extends Phaser.Scene {
             loop: false
         });
 
-        // Create Environment -------------------------------------------------
+        // Create Environment -------------------------------------------------        
+
         // create background
         this.space = this.add.image(480, 320, 'gradient');
         this.starfield = this.add.tileSprite(480, 320, 960, 640, 'space');
         this.elevator = this.add.tileSprite(480, 320, 0, 0, 'elevator');
         this.elevator2 = this.add.tileSprite(480, 320, 0, 0, 'elevator2').setAlpha(0);
         this.elevator3 = this.add.tileSprite(480, 320, 0, 0, 'elevator3').setAlpha(0);
-        this.elevatorAirlock = this.add.tileSprite(480, 320, 0, 0, 'elevatorAir').setAlpha(0);
+        this.stage3airlock = this.add.image(480, 900, 'airlock').setAlpha(0);
+        this.airlockIsSpawned = false;
+
+        // create playable character
+        this.player = new Astronaut(this, 480, 320, 'Astronaut', 0).setScale(0.5);
+        // define movement keys
+        keyW = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);
+        keyA = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
+        keyS = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S);
+        keyD = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
+        keySpace = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
+        this.keyIsPressed = false;
 
         //create the left wall
         this.leftWall =  this.add.group();
@@ -205,17 +226,7 @@ class Play extends Phaser.Scene {
             this.rightWall.add(rightTile);
         }
 
-        // Character and Object Creation --------------------------------------
-        // create placeholder character
-        this.player = new Astronaut(this, 480, 320, 'Astronaut', 0).setScale(0.5);
-        // define movement keys
-        keyW = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);
-        keyA = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
-        keyS = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S);
-        keyD = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
-        keySpace = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
-        this.keyIsPressed = false;
-
+        // Object and Character Creation --------------------------------------
         // create stage gravity (velocity value)
         this.stageGravity = 80;
         // create game over state
@@ -249,6 +260,9 @@ class Play extends Phaser.Scene {
         this.physics.add.collider(this.player, this.platformGroup);
         // create goop group... yes, you heard me
         this.goopGroup = this.add.group({
+            runChildUpdate: true,
+        })
+        this.projectileGroup = this.add.group({
             runChildUpdate: true,
         })
         // create transition group
@@ -291,16 +305,17 @@ class Play extends Phaser.Scene {
             callbackScope: this,
             loop: true
         });
+        // stage 3 projectile timer
+        this.projectileTimer = this.time.addEvent({
+            delay: 5000,
+            callback: this.addProjectile,
+            callbackScope: this,
+            loop: true
+        })
 
         this.escapePodIsSpawned = false;
         this.roofIsSpawned = false;
         this.monsterIsSpawned = false;
-        this.monsterBody = this.add.image(480, 455, 'Goop19').setAlpha(0);
-
-        // in-game hazard
-        // this.spikeyRoof = this.physics.add.sprite(480, 20, 'spikeRoof', 0).setScale(1);
-        // this.spikeyRoof.body.immovable = true;
-        // this.spikeyRoof.setAlpha(0);
 
         // Create UI ----------------------------------------------------------
         // add UI 
@@ -330,6 +345,7 @@ class Play extends Phaser.Scene {
         this.stage3Display = this.add.image(858, 570, 'stage3text').setAlpha(0);
     
         // SPECIAL: prompt goes with elevatorAirLock
+        playConfig.fontFamily = 'alarm clock';
         playConfig.color = '#000000';
         this.winPrompt = this.add.text(game.config.width/2 + 20, game.config.height/2 + borderUISize*3, '(SPACEBAR)', playConfig).setOrigin(0.5).setAlpha(0);
 
@@ -408,7 +424,6 @@ class Play extends Phaser.Scene {
             this.elevator.tilePositionY += 1.3;
             this.elevator2.tilePositionY += 1.3;
             this.elevator3.tilePositionY += 1.3;
-            this.elevatorAirlock.tilePositionY += 1.3;
             
             if (keyW.isDown && this.player.getFuel() > 0) {
                 // update background
@@ -417,7 +432,6 @@ class Play extends Phaser.Scene {
                 this.elevator.tilePositionY -= this.stageGravity/100;
                 this.elevator2.tilePositionY -= this.stageGravity/100;
                 this.elevator3.tilePositionY -= this.stageGravity/100;
-                this.elevatorAirlock.tilePositionY -= this.stageGravity/100;
                 this.level += 1/200;
             } else {
                 // update background
@@ -426,7 +440,6 @@ class Play extends Phaser.Scene {
                 this.elevator.tilePositionY += this.stageGravity/100;
                 this.elevator2.tilePositionY += this.stageGravity/100;
                 this.elevator3.tilePositionY += this.stageGravity/100;
-                this.elevatorAirlock.tilePositionY += this.stageGravity/100;
                 this.level += 1/100;
             }
         }
@@ -445,6 +458,10 @@ class Play extends Phaser.Scene {
                 //escapePod.setVelocityY(this.stageGravity *-1);
                 this.transitionGroup.incY(-1);
             }
+        }
+        if (this.level > stage3End - 4.5 && this.level < stage3End) {
+            this.stage3airlock.setAlpha(1);
+            this.stage3airlock.y -= 1.3;
         }
 
         // Stage start dependencies -------------------------------------------
@@ -476,10 +493,7 @@ class Play extends Phaser.Scene {
             this.stage3Display.setAlpha(1);
         }
         if (this.level > stage3End) {
-            // NOTE: add a tween for the transition
-            // this.elevator3.setAlpha(0);
             this.winPrompt.setAlpha(1);
-            this.elevatorAirlock.setAlpha(1);
         }
 
 
@@ -530,6 +544,33 @@ class Play extends Phaser.Scene {
         }, null, this);
         // dangerous wall damage calculation
         this.physics.world.overlap(this.player, this.goopGroup, function(player, hazard) {
+            if (player.getInvincible() == false) {
+                this.clang.play();
+                player.alpha = 0.5;
+                if (this.level > stage1Start) {
+                    player.decrimentHealth();
+                }
+                player.toggleInvincible();
+                this.playerInvuln = this.time.addEvent({
+                    delay: 1500,
+                    callback: ()=>{
+                        player.alpha = 1;
+                        player.toggleInvincible();
+                    },
+                    loop: false
+                })
+                if (this.player.getHealth() == 2) {
+                    this.heart3.destroy();
+                } else if (this.player.getHealth() == 1) {
+                    this.heart2.destroy();
+                } else if (this.player.getHealth() <= 0) {
+                    this.heart1.destroy();
+                    this.gameOver = true;
+                }
+            }
+        }, null, this);
+        // goop projectile damage calculation
+        this.physics.world.overlap(this.player, this.projectileGroup, function(player, hazard) {
             if (player.getInvincible() == false) {
                 this.clang.play();
                 player.alpha = 0.5;
@@ -615,7 +656,7 @@ class Play extends Phaser.Scene {
             let rand_obj = Phaser.Math.Between(0, 3);
             switch (rand_obj) {
                 case 0:
-                    let drill = new Hazard(this, rand_x_pos, 0, 'drill', 0).setScale(1).setOrigin(.5,.5);
+                    let drill = new Hazard(this, rand_x_pos, 0, 'drill', 0).setScale(.5).setOrigin(.5,.5);
                     drill.setVelocityY(rand_velocity);
                     drill.body.setAngularVelocity(rand_rotation);
                     drill.body.setCircle(drill.height/3);
@@ -623,7 +664,7 @@ class Play extends Phaser.Scene {
                     this.hazardGroup.add(drill);
                     break;
                 case 1:
-                    let wrench = new Hazard(this, rand_x_pos, 0, 'wrench', 0).setScale(1);
+                    let wrench = new Hazard(this, rand_x_pos, 0, 'wrench', 0).setScale(.5);
                     wrench.setVelocityY(rand_velocity);
                     wrench.body.setAngularVelocity(rand_rotation);
                     wrench.body.setCircle(wrench.width/3);
@@ -680,7 +721,7 @@ class Play extends Phaser.Scene {
     addRoof() {
         if (this.roofIsSpawned == false) {
             let spikeyRoof = new Hazard(this, 480, 20, 'spikeRoof', 0);
-            spikeyRoof.body.setSize(spikeyRoof.width*1, spikeyRoof.height*.7);
+            spikeyRoof.body.setSize(spikeyRoof.width*1, spikeyRoof.height*.5);
             this.hazardGroup.add(spikeyRoof);
             this.roofIsSpawned = true;
         }
@@ -723,10 +764,14 @@ class Play extends Phaser.Scene {
     // addTransition()
     // adds the transition object into the scene
     addTransition() {
+        if (this.level > stage0Start && this.level <= stage0End) {
+            let escapePod = new Transition(this, 480, 850, 'transitionLab', 0).setScale(1,1);
+            this.transitionGroup.add(escapePod);
+        }
         if (this.level > stage1Start && this.level <= stage1End) {
             let escapePod = new Transition(this, 480, 850, 'transitionEngineer', 0).setScale(1,1);
             this.transitionGroup.add(escapePod);
-        } else {
+        } else if (this.level > stage2Start && this.level <= stage2End) {
             let escapePod = new Transition(this, 480, 850, 'transitionLab', 0).setScale(1,1);
             this.transitionGroup.add(escapePod);
         }
@@ -742,20 +787,42 @@ class Play extends Phaser.Scene {
         }
     }
 
+    // addProjectile()
+    // add projectile into scene
+    addProjectile() {
+        if (this.level > stage3Start) {
+            let rand_x_pos = Phaser.Math.Between(elevatorLeft + 100, elevatorRight - 100);
+            let x_velocity;
+            if (rand_x_pos > game.config.width/2) {
+                x_velocity = -50;
+            } else if (rand_x_pos < game.config.width/2) {
+                x_velocity = 50;
+            } else {
+                x_velocity = 0;
+            }
+            let goopProjectileArr = ['projectile1', 'projectile2', 'projectile3', 'projectile4',
+                                     'projectile5', 'projectile6', 'projectile7', 'projectile8'];
+            let rand_obj = Phaser.Math.Between(0, 7);
+            let projectile = new Platform(this, rand_x_pos, 700, goopProjectileArr[rand_obj], 0).setOrigin(0.5);
+            projectile.body.setCircle(projectile.width/2.5);
+            projectile.body.setAngularVelocity(this.stageGravity);
+            projectile.setVelocityY(-this.stageGravity*2);
+            projectile.setVelocityX(x_velocity);
+            this.projectileGroup.add(projectile);
+        }
+    }
+
+
     // addMonster()
     // add monster at stage3Start
     addMonster() {
         if (this.monsterIsSpawned == false) {
-            console.log('add monster');
+            let monsterBody = new Hazard(this, 480, 450, 'Goop19', 0).setOrigin(0.5, 0.5);
             let monster = new Hazard(this, 480, 590, 'monster', 0).setOrigin(0.5);
-            this.monsterBody.setAlpha(1);
+            monster.body.setSize(monster.width/2, monster.height*.7);
             this.hazardGroup.add(monster);
             this.monsterIsSpawned = true;
         }
-    }
-
-    platformCollision(){
-        // needed?
     }
 
     // touchWall()

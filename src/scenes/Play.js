@@ -85,6 +85,7 @@ class Play extends Phaser.Scene {
         this.load.audio('clang', './assets/Sounds/clang.mp3');
         this.load.audio('pickupNoise', './assets/Sounds/pickupNoise.mp3');
         this.load.audio('tutorialSong', './assets/Sounds/final-game-tutorial-audio.mp3');
+        this.load.audio('finalBoss', './assets/Sounds/finalBoss.mp3');
     }
 
     //========================= CREATE() ======================================
@@ -132,13 +133,13 @@ class Play extends Phaser.Scene {
         //load the audio
         this.trackOneBGM = this.sound.add('trackOne', { 
             mute: false,
-            volume: .55,
+            volume: .50,
             rate: 1,
             loop: true 
         });
         this.trackTwoBGM = this.sound.add('trackTwo', { 
             mute: false,
-            volume: 1.1,
+            volume: 1,
             rate: 1,
             loop: true 
         });
@@ -154,6 +155,12 @@ class Play extends Phaser.Scene {
             rate: 1,
             loop: true 
         });
+        this.finalBoss = this.sound.add('finalBoss', { 
+            mute: false,
+            volume: .65,
+            rate: 1,
+            loop: true 
+        });
 
         if (this.level > stage0Start && this.level < stage1Start) {
             this.trackOneBGM.play();
@@ -165,7 +172,7 @@ class Play extends Phaser.Scene {
             this.trackTwoBGM.play();
         }
         if (this.level > stage3Start && this.level < stage3End) {
-            this.trackThreeBGM.play();
+            this.finalBoss.play();
         }
 
         this.slapAudio = this.sound.add('slap', { 
@@ -434,12 +441,14 @@ class Play extends Phaser.Scene {
             this.trackTutorial.play();
             this.trackTwoBGM.stop();
             this.trackThreeBGM.stop();
+            this.finalBoss.stop();
             this.trackTutorial.stop();
             this.jetpackAudio.stop();
             this.trackOneBGM.mute = true;
             this.trackTutorial.mute = true;
             this.trackTwoBGM.mute = true;
             this.trackThreeBGM.mute = true;
+            this.finalBoss.mute = true;
             this.scene.start('gameOverScene');
         }
 
@@ -921,6 +930,7 @@ class Play extends Phaser.Scene {
         this.trackTutorial.mute = true;
         this.trackTwoBGM.mute = true;
         this.trackThreeBGM.mute = true;
+        this.finalBoss.mute = true;
         // bump level +3 incase of early transition
         globalLevel = this.level + 13;
         this.scene.start('stageCompleteScene');

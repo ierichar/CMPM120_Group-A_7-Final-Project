@@ -33,7 +33,7 @@ class GameOver extends Phaser.Scene {
             loop: false 
         });
         // play dependent on stage
-        if (this.level > stage3Start) {
+        if (globalLevel > stage3Start) {
             this.GameOverMetal.play();
         } else {
             this.GameOverSong.play();

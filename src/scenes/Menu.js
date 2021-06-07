@@ -23,7 +23,7 @@ class Menu extends Phaser.Scene {
         // play audio        
         this.menuAudio = this.sound.add('menuMusic', { 
             mute: false,
-            volume: .85,
+            volume: .75,
             rate: 1.1,
             loop: true
         });

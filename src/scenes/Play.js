@@ -174,21 +174,18 @@ class Play extends Phaser.Scene {
             rate: 1,
             loop: false
         });
-
         this.clang = this.sound.add('clang', {
             mute:false,
             volume: .8,
             rate: 1,
             loop:false
         })
-
         this.pickupAudio = this.sound.add('pickupNoise', { 
             mute: false,
             volume: .8,
             rate: 1,
             loop: false
         });
-
         this.jetpackAudio = this.sound.add('jetpack', { 
             mute: false,
             volume: .3,
@@ -267,13 +264,17 @@ class Play extends Phaser.Scene {
             runChildUpdate: true,
         });
         this.physics.add.collider(this.player, this.platformGroup);
+
         // create goop group... yes, you heard me
         this.goopGroup = this.add.group({
             runChildUpdate: true,
         })
+
+        // create projectile group
         this.projectileGroup = this.add.group({
             runChildUpdate: true,
         })
+
         // create transition group
         this.transitionGroup = this.add.group({
             runChildUpdate: true,
@@ -356,9 +357,9 @@ class Play extends Phaser.Scene {
         // SPECIAL: prompt goes with elevatorAirLock
         this.winPrompt = this.add.text(game.config.width/2 + 20, game.config.height/2 + borderUISize*3, '(SPACEBAR)', playConfig).setOrigin(0.5).setAlpha(0);
 
-        this.ActiveTransmission = true;
-
+        // setup dialogue
         this.dialogueArr = [
+            // tutorial
             'Hey, we have a problem.\n'+ 
             'An unexpected meteor storm\n'+ 
             'has collided with the Global\n'+
@@ -373,24 +374,26 @@ class Play extends Phaser.Scene {
             'headed through the elevator\n'+
             'straight to Earth! Stop the\n'+
             'alien before it\'s too late!\n',
-
+            // stage 1
             'This is the observation deck.\n\n'+
             'Watch out for falling\n'+
             'equipment and remember...\n\n'+
             'Keep an eye on your fuel\n'+
             'as well as your health. \nWe\'re'+
             ' counting on you.', 
-
+            // stage 2
             'You\'re one floor away\n'+
             'from that THING.\n\n'+
             'Don\'t get caught by the\n'+
             'lifting platforms or\n'+
             'you\'ll get squished.\n'+
             'You\'re almost there!', 
-
+            // stage 3
             'If--- you--- hear--\n'+
             'me --- send it--- \n'+
-            'airlock!'];
+            'airlock!'
+        ];
+        this.ActiveTransmission = true;
         if (this.ActiveTransmission == true) {
             this.TransmissionText = this.add.image(850, 70, 'Transmission_Text');
             this.Text_Box = this.add.sprite(853, 240, 'TextBox', 0);
@@ -422,7 +425,9 @@ class Play extends Phaser.Scene {
 
     //========================= UPDATE() ======================================
     update() {
+        // dialogue display update
         this.Text_Box.setDisplaySize(207, 250);
+
         // Game State Updates -------------------------------------------------
         if (this.gameOver == true) {
             this.trackOneBGM.stop();
@@ -472,7 +477,7 @@ class Play extends Phaser.Scene {
         // update displays
         this.displayFuel.text = this.player.getFuel();
         this.displayLevel.text = Math.floor(15000 - this.level*100);
-
+        // update dialogue
         if (globalLevel < stage0End) {
             this.dialogueText = this.dialogueArr[0];
         } else if (globalLevel < stage1End) {
@@ -504,6 +509,7 @@ class Play extends Phaser.Scene {
                 this.elevator.tilePositionY -= this.stageGravity/100;
                 this.elevator2.tilePositionY -= this.stageGravity/100;
                 this.elevator3.tilePositionY -= this.stageGravity/100;
+                // update level
                 this.level += 1/200;
             } else {
                 // update background
@@ -512,6 +518,7 @@ class Play extends Phaser.Scene {
                 this.elevator.tilePositionY += this.stageGravity/100;
                 this.elevator2.tilePositionY += this.stageGravity/100;
                 this.elevator3.tilePositionY += this.stageGravity/100;
+                // update level
                 this.level += 1/100;
             }
         }
@@ -521,13 +528,10 @@ class Play extends Phaser.Scene {
             (this.level > stage1End - 2.5 && this.level < stage1End) ||
             (this.level > stage2End - 2.5 && this.level < stage2End)) {
             if (this.escapePodIsSpawned == false) {
-                //this.escapePod = this.physics.add.sprite( 480, 500, 'H_Beam', 0).setScale(12,0.25);
-                //this.escapePod.body.immovable = true;
                 this.addTransition();
                 this.physics.add.collider(this.player, this.transitionGroup,this.stageCompletion, false, this);
                 this.escapePodIsSpawned = true;
             } else {
-                //escapePod.setVelocityY(this.stageGravity *-1);
                 this.transitionGroup.incY(-1);
             }
         }
@@ -545,10 +549,7 @@ class Play extends Phaser.Scene {
             // change background
             this.elevator.setAlpha(0);
             this.elevator2.setAlpha(1);
-            // add spikey roof
-            // console.log('spawn roof');
-            // this.spikeyRoof.setAlpha(1);
-            // this.hazardGroup.add(this.spikeyRoof);
+            // add roof
             this.addRoof();
             // cycle stage display
             this.stage1Display.setAlpha(0);
@@ -695,7 +696,7 @@ class Play extends Phaser.Scene {
         let rand_velocity = Phaser.Math.Between(200, 400);
         let rand_rotation = Phaser.Math.Between(-100, 100);
         if (this.level > stage1Start && this.level < stage1End) {
-            // randomizer for level 1
+            // hazard randomizer for level 1
             let rand_obj = Phaser.Math.Between(0, 4);
             switch(rand_obj) {
                 case 0:
@@ -736,7 +737,7 @@ class Play extends Phaser.Scene {
             }
         }
         if (this.level > stage2Start && this.level < stage3Start) {
-            // randomizer for level 2
+            // hazard randomizer for level 2
             let rand_obj = Phaser.Math.Between(0, 3);
             switch (rand_obj) {
                 case 0:
@@ -759,15 +760,11 @@ class Play extends Phaser.Scene {
                 case 2:
                     let hbeam = new Hazard(this, rand_x_pos, 0, 'H_Beam', 0).setScale(0.35);
                     hbeam.setVelocityY(rand_velocity);
-                    // hbeam.body.setAngularVelocity(rand_rotation);
-                    // hbeam.body.setCircle(hbeam.height/3);
                     this.hazardGroup.add(hbeam);
                     break;
                 case 3:
                     let lbeam = new Hazard(this, rand_x_pos, 0, 'L_Beam', 0).setScale(0.35);
                     lbeam.setVelocityY(rand_velocity);
-                    // lbeam.body.setAngularVelocity(rand_rotation);
-                    // lbeam.body.setCircle(lbeam.height/3);
                     this.hazardGroup.add(lbeam);
                     break;
             }
@@ -812,7 +809,7 @@ class Play extends Phaser.Scene {
     }
 
     // addGoop()
-    // add various goop assets to scene
+    // add various goop assets to the great groovy goop group
     addGoop(){
         let rand_obj = Phaser.Math.Between(0, 2);
         if (this.level > stage3Start) {
@@ -919,10 +916,12 @@ class Play extends Phaser.Scene {
     // stageCompletion()
     // starts new scene when triggered
     stageCompletion() {
+        // mute audio
         this.trackOneBGM.mute = true;
         this.trackTutorial.mute = true;
         this.trackTwoBGM.mute = true;
         this.trackThreeBGM.mute = true;
+        // bump level +3 incase of early transition
         globalLevel = this.level + 13;
         this.scene.start('stageCompleteScene');
     }

@@ -39,17 +39,16 @@ class GameOver extends Phaser.Scene {
         this.GameOverSong.play();
         }
 
-        let menuConfig = {
-            fontFamily: 'Courier',
-            fontSize: '28px',
-            backgroundColor: '#F3B141',
-            color: '#843605',
-            align: 'right',
+        let gameOverConfig = {
+            fontFamily: 'alarm clock',
+            fontSize: '24px',
+            color: '#FFFFFF',
+            align: 'left',
             padding: {
                 top: 5,
                 bottom: 5,
             },
-            fixedWidth: 0
+            fixedWidth: 300
         }
 
         //assets
@@ -58,6 +57,14 @@ class GameOver extends Phaser.Scene {
 
         this.gameOverB = this.add.image(0, 0, 'gameOverBorder').setOrigin(0, 0);
         this.gameOverL = this.add.image(140, 100, 'gameOverLettering').setOrigin(0, 0);
+        this.distanceTrack = this.add.text(580, 205,  Math.floor(globalLevel), gameOverConfig);
+        if (globalLevel < stage2Start) {
+            this.stageTrack = this.add.text(560, 275, 'OBSERVATION DECK', gameOverConfig);
+        } else if (globalLevel < stage3Start) {
+            this.stageTrack = this.add.text(560, 275, 'ENGINEERING BAY', gameOverConfig);
+        } else {
+            this.stageTrack = this.add.text(560, 275, 'RESEARCH LAB', gameOverConfig);
+        } 
 
         this.menuButton = this.add.tileSprite(675, 400, 110, 50, 'menuButton').setOrigin(0, 0);
         this.playAgainButton = this.add.tileSprite(200, 400, 110, 50, 'playAgainButton').setOrigin(0, 0);

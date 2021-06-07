@@ -21,7 +21,7 @@ let config = {
             x:0,
             y:0,
             // debug off for assignment submission
-            debug: true,
+            // debug: true,
         },
     },
     scene: [ Menu, Credits, HowToPlay, Play, GameOver, StageComplete ]
@@ -47,6 +47,10 @@ let stage2End = 120;    // 120
 // Stage 3
 let stage3Start = 130;  // 130
 let stage3End = 180;    // 180
+
+let dialogueCounter = 0;
+let distanceTracker;
+let levelTracker;
 
 const tileSize = 280;
 const globalGravity = 500;

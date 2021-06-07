@@ -27,6 +27,7 @@ class Credits extends Phaser.Scene {
         this.astronaut.setVisible(false);
 
         this.menuButton.setInteractive();
+
         // menu click events
         this.menuButton.on("pointerover", ()=> {
             this.astronaut.setVisible(true);
@@ -42,9 +43,11 @@ class Credits extends Phaser.Scene {
     }
 
     update() {
+        // update background
         this.starfield.rotation += 0.003
     }
-
+    
+    // start scene
     playMenuScene(){
         this.scene.start('menuScene');
     }

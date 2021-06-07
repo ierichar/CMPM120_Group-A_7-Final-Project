@@ -18,7 +18,7 @@ class GameOver extends Phaser.Scene {
     }
 
     create() {
-
+        // add game over audio
         this.GameOverSong = this.sound.add('gameOver', { 
             mute: false,
             volume: .55,
@@ -32,32 +32,40 @@ class GameOver extends Phaser.Scene {
             rate: 1,
             loop: false 
         });
-        if(this.level > stage3Start){
-        this.GameOverMetal.play();
-        }
-        else{
-        this.GameOverSong.play();
+        // play dependent on stage
+        if (this.level > stage3Start) {
+            this.GameOverMetal.play();
+        } else {
+            this.GameOverSong.play();
         }
 
-        let menuConfig = {
-            fontFamily: 'Courier',
-            fontSize: '28px',
-            backgroundColor: '#F3B141',
-            color: '#843605',
-            align: 'right',
+        let gameOverConfig = {
+            fontFamily: 'alarm clock',
+            fontSize: '24px',
+            color: '#FFFFFF',
+            align: 'left',
             padding: {
                 top: 5,
                 bottom: 5,
             },
-            fixedWidth: 0
+            fixedWidth: 300
         }
 
-        //assets
+        // assets
         this.gradient_bg = this.add.tileSprite(0, 0, 960, 640, 'gradient').setOrigin(0, 0);
         this.starfield = this.add.tileSprite(0, 0, 960, 640, 'space').setOrigin(0, 0);
 
         this.gameOverB = this.add.image(0, 0, 'gameOverBorder').setOrigin(0, 0);
         this.gameOverL = this.add.image(140, 100, 'gameOverLettering').setOrigin(0, 0);
+        this.distanceTrack = this.add.text(580, 205,  Math.floor(globalLevel*100), gameOverConfig);
+        this.distanceUnit = this.add.text(680, 205, 'm', gameOverConfig);
+        if (globalLevel < stage2Start) {
+            this.stageTrack = this.add.text(560, 275, 'OBSERVATION DECK', gameOverConfig);
+        } else if (globalLevel < stage3Start) {
+            this.stageTrack = this.add.text(560, 275, 'ENGINEERING BAY', gameOverConfig);
+        } else {
+            this.stageTrack = this.add.text(560, 275, 'RESEARCH LAB', gameOverConfig);
+        } 
 
         this.menuButton = this.add.tileSprite(675, 400, 110, 50, 'menuButton').setOrigin(0, 0);
         this.playAgainButton = this.add.tileSprite(200, 400, 110, 50, 'playAgainButton').setOrigin(0, 0);
@@ -68,56 +76,49 @@ class GameOver extends Phaser.Scene {
         this.goop = this.add.image(400,600, 'Goop4').setScale(.5);
         
 
-        //menu buttons
+        // buttons
         this.menuButton.setInteractive();
         this.playAgainButton.setInteractive();
 
+        // menu click events
         this.menuButton.on("pointerover", ()=> {
             this.goop.setVisible(true);
             this.goop.x = this.menuButton.x + 130
             this.goop.y = this.menuButton.y + 30;
         })
-
         this.menuButton.on("pointerout", ()=> {
             this.goop.setVisible(false);
         })
-
         this.menuButton.on("pointerup", () => {
+            globalLevel = 0;
+            dialogueCounter = 0;
             this.playMenuScene();
-    })
-
+        })
+        // play again click events
         this.playAgainButton.on("pointerover", ()=> {
             this.heart.setVisible(true);
             this.heart.x = this.playAgainButton.x - 30
             this.heart.y = this.playAgainButton.y + 30;
         })
-
         this.playAgainButton.on("pointerout", ()=> {
             this.heart.setVisible(false);
         })
-
         this.playAgainButton.on("pointerup", () => {
+            dialogueCounter--;
             this.playGameScene();
         })
     }
 
     update() {
-
+        // update background
         this.starfield.tilePositionY += 1;
 
     }
 
+    // start respective scene
     playGameScene(){
         this.GameOverSong.mute = true;
         this.GameOverMetal.mute = true;
-        // // update globalLevel to start at previous in play
-        // if (globalLevel >= stage0Start && globalLevel <= stage0End) {
-        //     globalLevel = stage1Start;
-        // } else if (globalLevel >= stage1Start && globalLevel <= stage1End) {
-        //     globalLevel = stage2Start;
-        // } else if (globalLevel >= stage2Start && globalLevel <= stage2End) {
-        //     globalLevel = stage3Start;
-        // }
         this.scene.start('playScene');
     }
     playMenuScene(){

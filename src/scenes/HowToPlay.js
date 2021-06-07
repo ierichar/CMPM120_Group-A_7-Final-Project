@@ -19,7 +19,6 @@ class HowToPlay extends Phaser.Scene {
         this.starfield = this.add.tileSprite(game.config.width/2, 520, 960, 480, 'stars_expanded').setScale(2);
         this.border_Screen= this.add.image(0, 0, 'borderScreen').setOrigin(0, 0);
         
-        
         this.creditsLettering = this.add.image(100, 100, 'tutorialLettering').setOrigin(0, 0);
 
         this.menuButton = this.add.tileSprite(710, 525, 110, 50, 'menuButton').setOrigin(0, 0);
@@ -35,11 +34,9 @@ class HowToPlay extends Phaser.Scene {
             this.astronaut.x = this.menuButton.x - 50
             this.astronaut.y = this.menuButton.y + 25;
         })
-
         this.menuButton.on("pointerout", ()=> {
             this.astronaut.setVisible(false);
         })
-
         this.menuButton.on("pointerup", () => {
             this.playMenuScene();
         })
@@ -47,9 +44,11 @@ class HowToPlay extends Phaser.Scene {
     }
 
     update() {
+        // update background
         this.starfield.rotation += 0.003
-
     }
+
+    // scene transition
     playMenuScene(){
         this.scene.start('menuScene');
     }

@@ -20,7 +20,7 @@ class StageComplete extends Phaser.Scene {
             fixedWidth: 0
         }
 
-        this.add.text(game.config.width/2, game.config.height/2 + borderUISize, 'STAGE COMPLETE', menuConfig).setOrigin(0.5);
+        this.add.text(game.config.width/2, game.config.height/2 + borderUISize, 'STAGE' + (dialogueCounter) + 'COMPLETE', menuConfig).setOrigin(0.5);
         this.add.text(game.config.width/2 + 20, game.config.height/2 + borderUISize*2.5, '(SPACEBAR)', menuConfig).setOrigin(0.5);
 
         keySpace = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);

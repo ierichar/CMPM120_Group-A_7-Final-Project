@@ -1,12 +1,10 @@
 /***
  * Group A_7 Ace Heaven - Final Project
- * Authors: Ilda Lara Aguilar, Jackson Bazeal, Ian Richardson
+ * Authors: Ilda Lara Aguilar, Jackson Brazeal, Ian Richardson
  * CMPM 120/ARTG 120
- * Started: May 11th, 2021
- * 
+ * Started:     May 11th, 2021
+ * Completed:   June 7th, 2021 
  */
-
-//Jacksons swag comment
 
 let config = {
     type: Phaser.CANVAS,
@@ -21,7 +19,7 @@ let config = {
             x:0,
             y:0,
             // debug off for assignment submission
-             debug: true,
+            // debug: true,
         },
     },
     scene: [ Menu, Credits, HowToPlay, Play, GameOver, StageComplete ]
@@ -40,13 +38,17 @@ let stage0Start = 0;    // 0
 let stage0End = 10;     // 10
 // Stage 1
 let stage1Start = 20;   // 20
-let stage1End = 30;     // 60
+let stage1End = 60;     // 60
 // Stage 2
-let stage2Start = 40;   // 70
-let stage2End = 50;    // 120
+let stage2Start = 70;   // 70
+let stage2End = 120;    // 120
 // Stage 3
-let stage3Start = 60;  // 130
-let stage3End = 70;    // 180
+let stage3Start = 130;  // 130
+let stage3End = 180;    // 180
+
+let dialogueCounter = 0;
+let distanceTracker;
+let levelTracker;
 
 const tileSize = 280;
 const globalGravity = 500;

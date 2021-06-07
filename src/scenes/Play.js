@@ -74,6 +74,7 @@ class Play extends Phaser.Scene {
 
         //textbox animation
         this.load.atlas('TextBoxAtlas', './assets/TextBox_Anims.png', './assets/TextBox_Anims.json', Phaser.Loader.TEXTURE_ATLAS_JSON_HASH);
+        this.load.atlas('TextBoxReverseAtlas', './assets/TextBox_Anims_Reverse.png', './assets/TextBox_Anims_Reverse.json', Phaser.Loader.TEXTURE_ATLAS_JSON_HASH);
 
         // audio
         this.load.audio('trackOne', './assets/Sounds/trackOne.mp3');
@@ -110,6 +111,16 @@ class Play extends Phaser.Scene {
                 start: 1
             }),
             framerate: 5,
+        })
+
+        this.anims.create({
+            key:'Text_Box_Reverse', //key
+            // repeat: -1,
+            frames: this.anims.generateFrameNames('TextBoxReverseAtlas', { //ref atlas name
+                end: 24,
+                start: 1
+            }),
+            framerate: 5
         })
 
         // Predetermined level milestones -------------------------------------
@@ -356,6 +367,8 @@ class Play extends Phaser.Scene {
 
             this.Text_Box = this.add.sprite(853, 240, 'TextBox', 0);
             this.Text_Box.anims.play('Text_Box');
+            
+            this.Text_Box.anims.play('Text_Box_Reverse');
         }
 
     }

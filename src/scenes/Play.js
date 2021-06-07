@@ -94,15 +94,16 @@ class Play extends Phaser.Scene {
             fontFamily: 'alarm clock',
             fontSize: '24px',
             color: '#FFFFFF',
-            align: 'center',
+            align: 'left',
             padding: {
                 top: 5,
                 bottom: 5,
             },
-            fixedWidth: 0
+            fixedWidth: 180
         }
 
-         //slug push config
+        // Create animations
+        // text_bos push config
         this.anims.create({
             key:'Text_Box', //key
             // repeat: -1,
@@ -126,8 +127,6 @@ class Play extends Phaser.Scene {
         // Predetermined level milestones -------------------------------------
         // create stage level tracker
         this.level = globalLevel;
-
-        //this.physics.world.gravity.y = 20;
 
         // Create Audio -------------------------------------------------------
         //load the audio
@@ -198,7 +197,6 @@ class Play extends Phaser.Scene {
         });
 
         // Create Environment -------------------------------------------------        
-
         // create background
         this.space = this.add.image(480, 320, 'gradient');
         this.starfield = this.add.tileSprite(480, 320, 960, 640, 'space');
@@ -346,7 +344,7 @@ class Play extends Phaser.Scene {
         // create fuel display
         this.fuelOutline = this.add.image(485, 40, 'FuelBarOutline');
         this.fuelGauge = this.add.image(485, 40, 'FuelGauge');
-        this.displayFuel = this.add.text(460, 25, this.player.getFuel(), playConfig);
+        this.displayFuel = this.add.text(550, 42, this.player.getFuel(), playConfig).setOrigin(0.5);
         // create level descent tracker
         playConfig.fontSize = '28px';
         this.displayLevel = this.add.text(60, 540, Math.floor(100000 - this.level*100), playConfig);
@@ -356,19 +354,68 @@ class Play extends Phaser.Scene {
         this.stage3Display = this.add.image(858, 570, 'stage3text').setAlpha(0);
     
         // SPECIAL: prompt goes with elevatorAirLock
-        playConfig.fontFamily = 'alarm clock';
-        playConfig.color = '#000000';
         this.winPrompt = this.add.text(game.config.width/2 + 20, game.config.height/2 + borderUISize*3, '(SPACEBAR)', playConfig).setOrigin(0.5).setAlpha(0);
 
-        this.ActiveTransmission = true; 
+        this.ActiveTransmission = true;
 
+        this.dialogueArr = [
+            'Hey, we have a problem.\n'+ 
+            'An unexpected meteor storm\n'+ 
+            'has collided with the Global\n'+
+            'Astro Research Center! If\n'+
+            'you don’t remember anything\n'+
+            'from your training, make \n'+ 
+            'sure you use WASD to move\n'+
+            'in all directions to avoid\n'+
+            'hazards and collect fuel.\n'+
+            'A small alien life-form has\n'+
+            'escaped containment and it’s\n'+
+            'headed through the elevator\n'+
+            'straight to Earth! Stop the\n'+
+            'alien before it\'s too late!\n',
+
+            'This is the observation deck.\n\n'+
+            'Watch out for falling\n'+
+            'equipment and remember...\n\n'+
+            'Keep an eye on your fuel\n'+
+            'as well as your health. \nWe\'re'+
+            ' counting on you.', 
+
+            'You\'re one floor away\n'+
+            'from that THING.\n\n'+
+            'Don\'t get caught by the\n'+
+            'lifting platforms or\n'+
+            'you\'ll get squished.\n'+
+            'You\'re almost there!', 
+
+            'If--- you--- hear--\n'+
+            'me --- send it--- \n'+
+            'airlock!'];
         if (this.ActiveTransmission == true) {
             this.TransmissionText = this.add.image(850, 70, 'Transmission_Text');
-
             this.Text_Box = this.add.sprite(853, 240, 'TextBox', 0);
             this.Text_Box.anims.play('Text_Box');
-            
-            this.Text_Box.anims.play('Text_Box_Reverse');
+            var dialogueText;
+            this.dialogueTimer = this.time.addEvent({
+                delay: 1000,
+                callback: () => {
+                    playConfig.fontFamily = 'Arial';
+                    playConfig.fontSize = '14px';
+                    dialogueText = this.add.text(760, 125, this.dialogueArr[dialogueCounter++], playConfig);
+                },
+                callbackScope: this
+            })
+            this.textBoxTimer = this.time.addEvent({
+                delay: 15000,
+                callback: ()=> {
+                    dialogueText.destroy();
+                    this.Text_Box.anims.play('Text_Box_Reverse');
+                },
+                callbackScope: this,
+                loop: false,
+            })
+            this.ActiveTransmission = false;
+            // this.Text_Box.anims.play('Text_Box_Reverse');
         }
 
     }
@@ -424,8 +471,18 @@ class Play extends Phaser.Scene {
         // UI Updates ---------------------------------------------------------
         // update displays
         this.displayFuel.text = this.player.getFuel();
-        this.displayLevel.text = Math.floor(100000 - this.level*100);
-        this.UI_LevelTrack.y += this.level/1000;
+        this.displayLevel.text = Math.floor(10000 - this.level*100);
+        this.UI_LevelTrack.y += this.level/1500;
+
+        if (globalLevel < stage1Start) {
+            this.dialogueText = this.dialogueArr[0];
+        } else if (globalLevel < stage2Start) {
+            this.dialogueText = this.dialogueArr[1];
+        } else if (globalLevel < stage3Start) {
+            this.dialogueText = this.dialogueArr[2];
+        } else {
+            this.dialogueText = this.dialogueArr[3];
+        }
 
         // Environment Updates ------------------------------------------------
         // move environment with movement
@@ -617,12 +674,14 @@ class Play extends Phaser.Scene {
     }
     
     //======================== EXTERNAL FUNCTIONS =============================
+
     // addDummy()
     // add tutorial objects to scene
     addDummy() {
         if (this.level > stage0Start && this.level < stage0End) {
-            let dummy = new Hazard(this, 480, 0, 'drill', 0).setScale(.8);
+            let dummy = new Hazard(this, 480, 0, 'drill', 0).setScale(.5);
             dummy.setVelocityY(globalGravity/2);
+            dummy.body.setAngularVelocity(50);
             this.dummyGroup.add(dummy);
         }
     }
@@ -640,26 +699,36 @@ class Play extends Phaser.Scene {
                 case 0:
                     let calculator = new Hazard(this, rand_x_pos, 0, 'calculator', 0).setScale(0.5);
                     calculator.setVelocityY(rand_velocity);
+                    calculator.body.setCircle(calculator.height/2);
+                    calculator.setAngularVelocity(rand_rotation);
                     this.hazardGroup.add(calculator);
                     break;
                 case 1:
                     let magnet = new Hazard(this, rand_x_pos, 0, 'magnet', 0).setScale(0.5);
                     magnet.setVelocityY(rand_velocity);
+                    magnet.body.setCircle(magnet.height/2);
+                    magnet.setAngularVelocity(rand_rotation);
                     this.hazardGroup.add(magnet);
                     break;
                 case 2:
                     let microscope = new Hazard(this, rand_x_pos, 0, 'microscope', 0);
                     microscope.setVelocityY(rand_velocity);
+                    microscope.body.setCircle(microscope.height/2);
+                    microscope.setAngularVelocity(rand_rotation);
                     this.hazardGroup.add(microscope);
                     break;
                 case 3:
                     let telescope = new Hazard(this, rand_x_pos, 0, 'telescope', 0);
                     telescope.setVelocityY(rand_velocity);
+                    telescope.body.setCircle(telescope.height/2);
+                    telescope.setAngularVelocity(rand_rotation);
                     this.hazardGroup.add(telescope);
                     break;
                 case 4:
                     let vials = new Hazard(this, rand_x_pos, 0, 'vials', 0).setScale(0.5);
                     vials.setVelocityY(rand_velocity);
+                    vials.body.setCircle(vials.height/2);
+                    vials.setAngularVelocity(rand_rotation);
                     this.hazardGroup.add(vials);
                     break;
             }
@@ -777,14 +846,10 @@ class Play extends Phaser.Scene {
     // addTransition()
     // adds the transition object into the scene
     addTransition() {
-        if (this.level > stage0Start && this.level <= stage0End) {
-            let escapePod = new Transition(this, 480, 850, 'transitionLab', 0).setScale(1,1);
-            this.transitionGroup.add(escapePod);
-        }
         if (this.level > stage1Start && this.level <= stage1End) {
             let escapePod = new Transition(this, 480, 850, 'transitionEngineer', 0).setScale(1,1);
             this.transitionGroup.add(escapePod);
-        } else if (this.level > stage2Start && this.level <= stage2End) {
+        } else {
             let escapePod = new Transition(this, 480, 850, 'transitionLab', 0).setScale(1,1);
             this.transitionGroup.add(escapePod);
         }

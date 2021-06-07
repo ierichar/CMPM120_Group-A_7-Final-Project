@@ -20,7 +20,18 @@ class Menu extends Phaser.Scene {
 
     
     create() {
-
+        let menuConfig = {
+            fontFamily: 'alarm clock',
+            fontSize: '48px',
+            color: '#FFFFFF',
+            align: 'right',
+            padding: {
+                top: 5,
+                bottom: 5,
+            },
+            fixedWidth: 0
+        }
+        
         this.menuAudio = this.sound.add('menuMusic', { 
             mute: false,
             volume: .85,
